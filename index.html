@@ -1574,7 +1574,7 @@
             if(!window.pEventsAdded) {
                 document.addEventListener('touchmove', window.pDragMove, {passive: false});
                 document.addEventListener('touchend', window.pDragEnd);
-                document.addEventListener('mousemove', window.pDragMove);
+                document.addEventListener('mousemove', window.pDragMove, {passive: false});
                 document.addEventListener('mouseup', window.pDragEnd);
                 window.pEventsAdded = true;
             }
@@ -1595,19 +1595,25 @@
         };
 
         window.pDragStart = (e) => {
+            if (e.type === 'touchstart') e.preventDefault();
             const touch = e.type.includes('touch') ? e.touches[0] : e;
             window.pDragState.active = true;
-            window.pDragState.el = e.target;
-            window.pDragState.val = parseInt(e.target.id.split('_')[1]);
+            
+            let target = e.target;
+            if (!target.id || !target.id.startsWith('pPiece_')) return;
+            
+            window.pDragState.el = target;
+            window.pDragState.val = parseInt(target.id.split('_')[1]);
             window.pDragState.startX = touch.clientX;
             window.pDragState.startY = touch.clientY;
             
-            e.target.classList.remove('transition-transform', 'duration-200');
-            e.target.style.zIndex = '50';
+            target.classList.remove('transition-transform', 'duration-200');
+            target.style.zIndex = '50';
         };
 
         window.pDragMove = (e) => {
-            if(!window.pDragState.active) return;
+            if(!window.pDragState.active || !window.pDragState.el) return;
+            e.preventDefault();
             
             const touch = e.type.includes('touch') ? e.touches[0] : e;
             const dx = touch.clientX - window.pDragState.startX;
@@ -1621,7 +1627,6 @@
             const r2 = Math.floor(emptyIdx / 2), c2 = emptyIdx % 2;
             
             if (Math.abs(r1 - r2) + Math.abs(c1 - c2) === 1) {
-                e.preventDefault(); 
                 let mX = 0, mY = 0;
                 if (r1 === r2) {
                     if (c1 < c2) mX = Math.max(0, Math.min(dx, el.offsetWidth));
@@ -1635,7 +1640,8 @@
         };
 
         window.pDragEnd = (e) => {
-            if(!window.pDragState.active) return;
+            if(!window.pDragState.active || !window.pDragState.el) return;
+            
             const el = window.pDragState.el;
             window.pDragState.active = false;
             
@@ -1655,11 +1661,13 @@
             if (Math.abs(r1 - r2) + Math.abs(c1 - c2) === 1) {
                 if (r1 === r2 && Math.abs(dx) > el.offsetWidth * 0.3) swapped = true;
                 if (c1 === c2 && Math.abs(dy) > el.offsetHeight * 0.3) swapped = true;
-                if (Math.abs(dx) < 5 && Math.abs(dy) < 5) swapped = true; 
+                if (Math.abs(dx) < 10 && Math.abs(dy) < 10) swapped = true; 
             }
             
             if (swapped) window.moverPiezaPuzzle(idx);
             else window.updatePuzzleUI(); 
+            
+            window.pDragState.el = null;
         };
 
         window.moverPiezaPuzzle = (idx) => {
