@@ -244,6 +244,14 @@
         </div>
         <div class="flex-1 p-6 flex flex-col gap-6 max-w-lg mx-auto w-full overflow-y-auto">
             <div class="flex flex-col gap-3">
+                <button onclick="cerrarNovedades(); abrirJuegos(); seleccionarJuego('puzzle');" class="w-full text-left p-4 bg-teal-50 rounded-xl shadow-sm border border-teal-200 flex gap-3 items-start relative overflow-hidden hover:bg-teal-100 transition active:scale-95 cursor-pointer">
+                    <div class="absolute top-0 right-0 bg-teal-600 text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg">¡NUEVO!</div>
+                    <span class="text-teal-600 mt-0.5 text-lg">🧩</span>
+                    <div>
+                        <p class="text-teal-900 font-bold pr-8">¡Nuevo juego en solitario! Puzle Deslizante.</p>
+                        <p class="text-teal-700 text-xs mt-1 font-medium">Toca aquí para jugar ➡️</p>
+                    </div>
+                </button>
                 <button onclick="cerrarNovedades(); abrirJuegos(); seleccionarJuego('flash');" class="w-full text-left p-4 bg-orange-50 rounded-xl shadow-sm border border-orange-200 flex gap-3 items-start relative overflow-hidden hover:bg-orange-100 transition active:scale-95 cursor-pointer">
                     <div class="absolute top-0 right-0 bg-orange-600 text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg">¡NUEVO!</div>
                     <span class="text-orange-600 mt-0.5 text-lg">📸</span>
@@ -997,6 +1005,7 @@
         window.cerrarJuegos = function() {
             if (window.parejasTimer) clearInterval(window.parejasTimer);
             if (window.flashCountdownTimer) clearInterval(window.flashCountdownTimer);
+            if (window.puzzleTimer) clearInterval(window.puzzleTimer);
             document.getElementById('juegosHeaderTimer').classList.add('hidden');
             document.getElementById('juegosHeaderScore').classList.add('hidden');
             window.mostrarBotonesFlotantes();
@@ -1008,6 +1017,7 @@
             if (window.impTouchEndHandler) window.removeEventListener('touchend', window.impTouchEndHandler);
             if (window.parejasTimer) clearInterval(window.parejasTimer);
             if (window.flashCountdownTimer) clearInterval(window.flashCountdownTimer);
+            if (window.puzzleTimer) clearInterval(window.puzzleTimer);
             document.getElementById('juegosHeaderTimer').classList.add('hidden');
             document.getElementById('juegosHeaderScore').classList.add('hidden');
             
@@ -1448,6 +1458,7 @@
             document.getElementById('juegosContenido').innerHTML = `
                 <div class="w-full max-w-sm flex flex-col gap-4 fade-in text-center pb-8">
                     <p class="text-gray-300 mb-4">Selecciona un juego para pasar el rato.</p>
+                    <button onclick="window.seleccionarJuego('puzzle')" class="w-full bg-teal-700 text-white font-bold py-6 px-4 rounded-2xl shadow-lg hover:bg-teal-600 transition active:scale-95 text-xl border border-teal-500">🧩 Puzle Deslizante</button>
                     <button onclick="window.seleccionarJuego('impostor')" class="w-full bg-rose-700 text-white font-bold py-6 px-4 rounded-2xl shadow-lg hover:bg-rose-600 transition active:scale-95 text-xl border border-rose-500">🕵️ El Impostor Cofrade</button>
                     <button onclick="window.seleccionarJuego('parejas')" class="w-full bg-rose-900 text-white font-bold py-6 px-4 rounded-2xl shadow-lg hover:bg-rose-800 transition active:scale-95 text-xl border border-rose-700">🃏 Parejas Cofrades</button>
                     <button onclick="window.seleccionarJuego('trivial')" class="w-full bg-blue-700 text-white font-bold py-6 px-4 rounded-2xl shadow-lg hover:bg-blue-600 transition active:scale-95 text-xl border border-blue-500">🧠 Trivial Cofrade</button>
@@ -1459,7 +1470,11 @@
 
         window.seleccionarJuego = function(j) {
             window.selectedGame = j;
-            window.renderJuegosSetup();
+            if (j === 'puzzle') {
+                window.iniciarPuzzle();
+            } else {
+                window.renderJuegosSetup();
+            }
         };
 
         window.renderJuegosSetup = function() {
@@ -1494,6 +1509,97 @@
             cont.innerHTML = '';
             for(let i=1; i<=n; i++) {
                 cont.innerHTML += `<input type="text" id="nombreJugadorJuegos${i}" placeholder="Nombre del jugador ${i}" class="w-full bg-gray-700 text-white border border-gray-600 rounded-lg p-3">`;
+            }
+        };
+
+        // LÓGICA PUZLE DESLIZANTE
+        window.iniciarPuzzle = () => {
+            window.toggleDisclaimer(false);
+            document.getElementById('juegosTitulo').innerText = 'Puzle Deslizante';
+            const hTimer = document.getElementById('juegosHeaderTimer');
+            hTimer.classList.remove('hidden'); 
+            hTimer.innerText = '00:00';
+            
+            window.puzzleImg = window.bancoFlash[Math.floor(Math.random() * window.bancoFlash.length)];
+            window.puzzleGrid = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]; 
+            let empty = 11;
+            
+            for(let i = 0; i < 200; i++) {
+                const adj = []; 
+                if(empty % 3 > 0) adj.push(empty - 1); 
+                if(empty % 3 < 2) adj.push(empty + 1);
+                if(empty > 2) adj.push(empty - 3); 
+                if(empty < 9) adj.push(empty + 3);
+                
+                const next = adj[Math.floor(Math.random() * adj.length)];
+                [window.puzzleGrid[empty], window.puzzleGrid[next]] = [window.puzzleGrid[next], window.puzzleGrid[empty]];
+                empty = next;
+            }
+            
+            window.puzzleSecs = 0; 
+            if(window.puzzleTimer) clearInterval(window.puzzleTimer);
+            window.puzzleTimer = setInterval(() => { 
+                window.puzzleSecs++; 
+                let m = Math.floor(window.puzzleSecs / 60);
+                let s = window.puzzleSecs % 60; 
+                hTimer.innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`; 
+            }, 1000);
+            
+            window.renderPuzzleUI();
+        };
+
+        window.renderPuzzleUI = () => {
+            document.getElementById('juegosContenido').innerHTML = `
+                <div class="space-y-4 w-full text-center fade-in">
+                    <p class="text-teal-400 font-bold uppercase text-sm tracking-widest">${window.puzzleImg.name}</p>
+                    <div class="relative w-full max-w-[300px] aspect-[3/4] bg-gray-800 border-4 border-gray-700 rounded-lg overflow-hidden shadow-2xl mx-auto" id="pBoard"></div>
+                    <button onclick="window.volverJuegos()" class="text-gray-500 font-bold py-2 px-6 rounded-full bg-gray-800 border border-gray-700 mt-4 active:scale-95 transition">Abandonar</button>
+                </div>`;
+                
+            const board = document.getElementById('pBoard');
+            window.puzzleGrid.forEach((val, i) => {
+                if(val === 11) return;
+                
+                const div = document.createElement('div');
+                div.className = "absolute w-[33.333%] h-[25%] border border-black/30 bg-cover transition-all duration-200 cursor-pointer shadow-sm";
+                div.style.backgroundImage = `url('https://raw.githubusercontent.com/ejruizgarcia/images/main/${window.puzzleImg.file}')`;
+                div.style.backgroundSize = "300% 400%";
+                div.style.backgroundPosition = `${(val % 3) * 50}% ${Math.floor(val / 3) * 33.333}%`;
+                div.style.left = (i % 3) * 33.333 + "%"; 
+                div.style.top = Math.floor(i / 3) * 25 + "%";
+                div.onclick = () => window.moverPiezaPuzzle(i);
+                board.appendChild(div);
+            });
+        };
+
+        window.moverPiezaPuzzle = (idx) => {
+            const empty = window.puzzleGrid.indexOf(11);
+            const r1 = Math.floor(idx / 3);
+            const c1 = idx % 3;
+            const r2 = Math.floor(empty / 3);
+            const c2 = empty % 3;
+            
+            if(Math.abs(r1 - r2) + Math.abs(c1 - c2) === 1) {
+                [window.puzzleGrid[idx], window.puzzleGrid[empty]] = [window.puzzleGrid[empty], window.puzzleGrid[idx]];
+                window.renderPuzzleUI();
+                
+                if(window.puzzleGrid.every((v, i) => v === i)) {
+                    clearInterval(window.puzzleTimer);
+                    document.getElementById('juegosHeaderTimer').classList.add('hidden');
+                    
+                    const msg = window.puzzleSecs < 60 
+                        ? `${window.puzzleSecs} segundos` 
+                        : `${Math.floor(window.puzzleSecs / 60)} min y ${window.puzzleSecs % 60} seg`;
+                        
+                    document.getElementById('juegosContenido').innerHTML = `
+                        <div class="text-center space-y-6 fade-in w-full max-w-sm">
+                            <p class="text-8xl pop-in">🧩</p>
+                            <h2 class="text-3xl font-black text-teal-400">¡Enhorabuena, lo has conseguido!</h2>
+                            <p class="text-xl text-gray-300">Has tardado <b class="text-white">${msg}</b> en montar el puzle de ${window.puzzleImg.name}.</p>
+                            <button onclick="window.iniciarPuzzle()" class="w-full p-4 bg-teal-600 text-white rounded-xl font-bold text-xl shadow-lg active:scale-95 transition">Jugar de nuevo</button>
+                            <button onclick="window.volverJuegos()" class="w-full p-4 bg-gray-700 text-white rounded-xl font-bold text-xl shadow-lg active:scale-95 transition">Volver al menú</button>
+                        </div>`;
+                }
             }
         };
 
