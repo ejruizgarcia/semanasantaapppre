@@ -1512,7 +1512,7 @@
             }
         };
 
-        // LÓGICA PUZLE DESLIZANTE
+        // LÓGICA PUZLE DESLIZANTE CON DRAG AND DROP
         window.iniciarPuzzle = () => {
             window.toggleDisclaimer(false);
             document.getElementById('juegosTitulo').innerText = 'Puzle Deslizante';
@@ -1545,52 +1545,137 @@
                 hTimer.innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`; 
             }, 1000);
             
-            window.renderPuzzleUI();
+            window.initPuzzleUI();
         };
 
-        window.renderPuzzleUI = () => {
+        window.initPuzzleUI = () => {
             document.getElementById('juegosContenido').innerHTML = `
                 <div class="space-y-4 w-full text-center fade-in">
                     <p class="text-teal-400 font-bold uppercase text-sm tracking-widest">${window.puzzleImg.name}</p>
-                    <div class="relative w-full max-w-[300px] aspect-[3/4] bg-gray-800 border-4 border-gray-700 rounded-lg overflow-hidden shadow-2xl mx-auto" id="pBoard"></div>
+                    <div class="relative w-full max-w-[300px] aspect-[3/4] bg-gray-800 border-4 border-gray-700 rounded-lg overflow-hidden shadow-2xl mx-auto touch-none select-none" id="pBoard"></div>
                     <button onclick="window.volverJuegos()" class="text-gray-500 font-bold py-2 px-6 rounded-full bg-gray-800 border border-gray-700 mt-4 active:scale-95 transition">Abandonar</button>
                 </div>`;
                 
             const board = document.getElementById('pBoard');
-            window.puzzleGrid.forEach((val, i) => {
-                if(val === 11) return;
-                
+            for(let val=0; val<11; val++) {
                 const div = document.createElement('div');
-                div.className = "absolute w-[33.333%] h-[25%] border border-black/30 bg-cover transition-all duration-200 cursor-pointer shadow-sm";
+                div.id = 'pPiece_' + val;
+                div.className = "absolute w-[33.333%] h-[25%] border border-black/30 bg-cover transition-transform duration-200 cursor-pointer shadow-sm z-10";
                 div.style.backgroundImage = `url('https://raw.githubusercontent.com/ejruizgarcia/images/main/${window.puzzleImg.file}')`;
                 div.style.backgroundSize = "300% 400%";
                 div.style.backgroundPosition = `${(val % 3) * 50}% ${Math.floor(val / 3) * 33.333}%`;
-                div.style.left = (i % 3) * 33.333 + "%"; 
-                div.style.top = Math.floor(i / 3) * 25 + "%";
-                div.onclick = () => window.moverPiezaPuzzle(i);
+                
+                div.addEventListener('touchstart', window.pDragStart, {passive: false});
+                div.addEventListener('mousedown', window.pDragStart);
+                
                 board.appendChild(div);
+            }
+
+            if(!window.pEventsAdded) {
+                document.addEventListener('touchmove', window.pDragMove, {passive: false});
+                document.addEventListener('touchend', window.pDragEnd);
+                document.addEventListener('mousemove', window.pDragMove);
+                document.addEventListener('mouseup', window.pDragEnd);
+                window.pEventsAdded = true;
+            }
+            
+            window.pDragState = { active: false, val: -1, startX: 0, startY: 0, el: null };
+            window.updatePuzzleUI();
+        };
+
+        window.updatePuzzleUI = () => {
+            window.puzzleGrid.forEach((val, i) => {
+                if(val === 11) return;
+                const el = document.getElementById('pPiece_' + val);
+                if(el) {
+                    el.style.transform = `translate(${(i % 3) * 100}%, ${Math.floor(i / 3) * 100}%)`;
+                    el.dataset.idx = i;
+                }
             });
+        };
+
+        window.pDragStart = (e) => {
+            const touch = e.type.includes('touch') ? e.touches[0] : e;
+            window.pDragState.active = true;
+            window.pDragState.el = e.target;
+            window.pDragState.val = parseInt(e.target.id.split('_')[1]);
+            window.pDragState.startX = touch.clientX;
+            window.pDragState.startY = touch.clientY;
+            
+            e.target.classList.remove('transition-transform', 'duration-200');
+            e.target.style.zIndex = '50';
+        };
+
+        window.pDragMove = (e) => {
+            if(!window.pDragState.active) return;
+            
+            const touch = e.type.includes('touch') ? e.touches[0] : e;
+            const dx = touch.clientX - window.pDragState.startX;
+            const dy = touch.clientY - window.pDragState.startY;
+            
+            const el = window.pDragState.el;
+            const idx = parseInt(el.dataset.idx);
+            const emptyIdx = window.puzzleGrid.indexOf(11);
+            
+            const r1 = Math.floor(idx / 3), c1 = idx % 3;
+            const r2 = Math.floor(emptyIdx / 3), c2 = emptyIdx % 3;
+            
+            if (Math.abs(r1 - r2) + Math.abs(c1 - c2) === 1) {
+                e.preventDefault(); // Previene el scroll de la página al arrastrar
+                let mX = 0, mY = 0;
+                if (r1 === r2) {
+                    if (c1 < c2) mX = Math.max(0, Math.min(dx, el.offsetWidth));
+                    else mX = Math.min(0, Math.max(dx, -el.offsetWidth));
+                } else {
+                    if (r1 < r2) mY = Math.max(0, Math.min(dy, el.offsetHeight));
+                    else mY = Math.min(0, Math.max(dy, -el.offsetHeight));
+                }
+                el.style.transform = `translate(calc(${c1 * 100}% + ${mX}px), calc(${r1 * 100}% + ${mY}px))`;
+            }
+        };
+
+        window.pDragEnd = (e) => {
+            if(!window.pDragState.active) return;
+            const el = window.pDragState.el;
+            window.pDragState.active = false;
+            
+            el.classList.add('transition-transform', 'duration-200');
+            el.style.zIndex = '10';
+            
+            const touch = e.type.includes('touch') ? e.changedTouches[0] : e;
+            const dx = touch.clientX - window.pDragState.startX;
+            const dy = touch.clientY - window.pDragState.startY;
+            
+            const idx = parseInt(el.dataset.idx);
+            const emptyIdx = window.puzzleGrid.indexOf(11);
+            const r1 = Math.floor(idx / 3), c1 = idx % 3;
+            const r2 = Math.floor(emptyIdx / 3), c2 = emptyIdx % 3;
+            
+            let swapped = false;
+            if (Math.abs(r1 - r2) + Math.abs(c1 - c2) === 1) {
+                if (r1 === r2 && Math.abs(dx) > el.offsetWidth * 0.3) swapped = true;
+                if (c1 === c2 && Math.abs(dy) > el.offsetHeight * 0.3) swapped = true;
+                if (Math.abs(dx) < 5 && Math.abs(dy) < 5) swapped = true; // Permite el click rápido normal
+            }
+            
+            if (swapped) window.moverPiezaPuzzle(idx);
+            else window.updatePuzzleUI(); // Si no llega al límite de arrastre, vuelve a su sitio
         };
 
         window.moverPiezaPuzzle = (idx) => {
             const empty = window.puzzleGrid.indexOf(11);
-            const r1 = Math.floor(idx / 3);
-            const c1 = idx % 3;
-            const r2 = Math.floor(empty / 3);
-            const c2 = empty % 3;
+            [window.puzzleGrid[idx], window.puzzleGrid[empty]] = [window.puzzleGrid[empty], window.puzzleGrid[idx]];
+            window.updatePuzzleUI();
             
-            if(Math.abs(r1 - r2) + Math.abs(c1 - c2) === 1) {
-                [window.puzzleGrid[idx], window.puzzleGrid[empty]] = [window.puzzleGrid[empty], window.puzzleGrid[idx]];
-                window.renderPuzzleUI();
+            if(window.puzzleGrid.every((v, i) => v === i)) {
+                clearInterval(window.puzzleTimer);
+                document.getElementById('juegosHeaderTimer').classList.add('hidden');
                 
-                if(window.puzzleGrid.every((v, i) => v === i)) {
-                    clearInterval(window.puzzleTimer);
-                    document.getElementById('juegosHeaderTimer').classList.add('hidden');
+                const msg = window.puzzleSecs < 60 
+                    ? `${window.puzzleSecs} segundos` 
+                    : `${Math.floor(window.puzzleSecs / 60)} min y ${window.puzzleSecs % 60} seg`;
                     
-                    const msg = window.puzzleSecs < 60 
-                        ? `${window.puzzleSecs} segundos` 
-                        : `${Math.floor(window.puzzleSecs / 60)} min y ${window.puzzleSecs % 60} seg`;
-                        
+                setTimeout(() => {
                     document.getElementById('juegosContenido').innerHTML = `
                         <div class="text-center space-y-6 fade-in w-full max-w-sm">
                             <p class="text-8xl pop-in">🧩</p>
@@ -1599,7 +1684,7 @@
                             <button onclick="window.iniciarPuzzle()" class="w-full p-4 bg-teal-600 text-white rounded-xl font-bold text-xl shadow-lg active:scale-95 transition">Jugar de nuevo</button>
                             <button onclick="window.volverJuegos()" class="w-full p-4 bg-gray-700 text-white rounded-xl font-bold text-xl shadow-lg active:scale-95 transition">Volver al menú</button>
                         </div>`;
-                }
+                }, 300);
             }
         };
 
@@ -2589,6 +2674,182 @@
                 </div>`;
         };
 
+        // LÓGICA PUZLE DESLIZANTE CON DRAG AND DROP
+        window.iniciarPuzzle = () => {
+            window.toggleDisclaimer(false);
+            document.getElementById('juegosTitulo').innerText = 'Puzle Deslizante';
+            const hTimer = document.getElementById('juegosHeaderTimer');
+            hTimer.classList.remove('hidden'); 
+            hTimer.innerText = '00:00';
+            
+            window.puzzleImg = window.bancoFlash[Math.floor(Math.random() * window.bancoFlash.length)];
+            window.puzzleGrid = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]; 
+            let empty = 11;
+            
+            for(let i = 0; i < 200; i++) {
+                const adj = []; 
+                if(empty % 3 > 0) adj.push(empty - 1); 
+                if(empty % 3 < 2) adj.push(empty + 1);
+                if(empty > 2) adj.push(empty - 3); 
+                if(empty < 9) adj.push(empty + 3);
+                
+                const next = adj[Math.floor(Math.random() * adj.length)];
+                [window.puzzleGrid[empty], window.puzzleGrid[next]] = [window.puzzleGrid[next], window.puzzleGrid[empty]];
+                empty = next;
+            }
+            
+            window.puzzleSecs = 0; 
+            if(window.puzzleTimer) clearInterval(window.puzzleTimer);
+            window.puzzleTimer = setInterval(() => { 
+                window.puzzleSecs++; 
+                let m = Math.floor(window.puzzleSecs / 60);
+                let s = window.puzzleSecs % 60; 
+                hTimer.innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`; 
+            }, 1000);
+            
+            window.initPuzzleUI();
+        };
+
+        window.initPuzzleUI = () => {
+            document.getElementById('juegosContenido').innerHTML = `
+                <div class="space-y-4 w-full text-center fade-in">
+                    <p class="text-teal-400 font-bold uppercase text-sm tracking-widest">${window.puzzleImg.name}</p>
+                    <div class="relative w-full max-w-[300px] aspect-[3/4] bg-gray-800 border-4 border-gray-700 rounded-lg overflow-hidden shadow-2xl mx-auto touch-none select-none" id="pBoard"></div>
+                    <button onclick="window.volverJuegos()" class="text-gray-500 font-bold py-2 px-6 rounded-full bg-gray-800 border border-gray-700 mt-4 active:scale-95 transition">Abandonar</button>
+                </div>`;
+                
+            const board = document.getElementById('pBoard');
+            for(let val=0; val<11; val++) {
+                const div = document.createElement('div');
+                div.id = 'pPiece_' + val;
+                div.className = "absolute w-[33.333%] h-[25%] border border-black/30 bg-cover transition-transform duration-200 cursor-pointer shadow-sm z-10";
+                div.style.backgroundImage = `url('https://raw.githubusercontent.com/ejruizgarcia/images/main/${window.puzzleImg.file}')`;
+                div.style.backgroundSize = "300% 400%";
+                div.style.backgroundPosition = `${(val % 3) * 50}% ${Math.floor(val / 3) * 33.333}%`;
+                
+                div.addEventListener('touchstart', window.pDragStart, {passive: false});
+                div.addEventListener('mousedown', window.pDragStart);
+                
+                board.appendChild(div);
+            }
+
+            if(!window.pEventsAdded) {
+                document.addEventListener('touchmove', window.pDragMove, {passive: false});
+                document.addEventListener('touchend', window.pDragEnd);
+                document.addEventListener('mousemove', window.pDragMove);
+                document.addEventListener('mouseup', window.pDragEnd);
+                window.pEventsAdded = true;
+            }
+            
+            window.pDragState = { active: false, val: -1, startX: 0, startY: 0, el: null };
+            window.updatePuzzleUI();
+        };
+
+        window.updatePuzzleUI = () => {
+            window.puzzleGrid.forEach((val, i) => {
+                if(val === 11) return;
+                const el = document.getElementById('pPiece_' + val);
+                if(el) {
+                    el.style.transform = `translate(${(i % 3) * 100}%, ${Math.floor(i / 3) * 100}%)`;
+                    el.dataset.idx = i;
+                }
+            });
+        };
+
+        window.pDragStart = (e) => {
+            const touch = e.type.includes('touch') ? e.touches[0] : e;
+            window.pDragState.active = true;
+            window.pDragState.el = e.target;
+            window.pDragState.val = parseInt(e.target.id.split('_')[1]);
+            window.pDragState.startX = touch.clientX;
+            window.pDragState.startY = touch.clientY;
+            
+            e.target.classList.remove('transition-transform', 'duration-200');
+            e.target.style.zIndex = '50';
+        };
+
+        window.pDragMove = (e) => {
+            if(!window.pDragState.active) return;
+            
+            const touch = e.type.includes('touch') ? e.touches[0] : e;
+            const dx = touch.clientX - window.pDragState.startX;
+            const dy = touch.clientY - window.pDragState.startY;
+            
+            const el = window.pDragState.el;
+            const idx = parseInt(el.dataset.idx);
+            const emptyIdx = window.puzzleGrid.indexOf(11);
+            
+            const r1 = Math.floor(idx / 3), c1 = idx % 3;
+            const r2 = Math.floor(emptyIdx / 3), c2 = emptyIdx % 3;
+            
+            if (Math.abs(r1 - r2) + Math.abs(c1 - c2) === 1) {
+                e.preventDefault(); 
+                let mX = 0, mY = 0;
+                if (r1 === r2) {
+                    if (c1 < c2) mX = Math.max(0, Math.min(dx, el.offsetWidth));
+                    else mX = Math.min(0, Math.max(dx, -el.offsetWidth));
+                } else {
+                    if (r1 < r2) mY = Math.max(0, Math.min(dy, el.offsetHeight));
+                    else mY = Math.min(0, Math.max(dy, -el.offsetHeight));
+                }
+                el.style.transform = `translate(calc(${c1 * 100}% + ${mX}px), calc(${r1 * 100}% + ${mY}px))`;
+            }
+        };
+
+        window.pDragEnd = (e) => {
+            if(!window.pDragState.active) return;
+            const el = window.pDragState.el;
+            window.pDragState.active = false;
+            
+            el.classList.add('transition-transform', 'duration-200');
+            el.style.zIndex = '10';
+            
+            const touch = e.type.includes('touch') ? e.changedTouches[0] : e;
+            const dx = touch.clientX - window.pDragState.startX;
+            const dy = touch.clientY - window.pDragState.startY;
+            
+            const idx = parseInt(el.dataset.idx);
+            const emptyIdx = window.puzzleGrid.indexOf(11);
+            const r1 = Math.floor(idx / 3), c1 = idx % 3;
+            const r2 = Math.floor(emptyIdx / 3), c2 = emptyIdx % 3;
+            
+            let swapped = false;
+            if (Math.abs(r1 - r2) + Math.abs(c1 - c2) === 1) {
+                if (r1 === r2 && Math.abs(dx) > el.offsetWidth * 0.3) swapped = true;
+                if (c1 === c2 && Math.abs(dy) > el.offsetHeight * 0.3) swapped = true;
+                if (Math.abs(dx) < 5 && Math.abs(dy) < 5) swapped = true; 
+            }
+            
+            if (swapped) window.moverPiezaPuzzle(idx);
+            else window.updatePuzzleUI(); 
+        };
+
+        window.moverPiezaPuzzle = (idx) => {
+            const empty = window.puzzleGrid.indexOf(11);
+            [window.puzzleGrid[idx], window.puzzleGrid[empty]] = [window.puzzleGrid[empty], window.puzzleGrid[idx]];
+            window.updatePuzzleUI();
+            
+            if(window.puzzleGrid.every((v, i) => v === i)) {
+                clearInterval(window.puzzleTimer);
+                document.getElementById('juegosHeaderTimer').classList.add('hidden');
+                
+                const msg = window.puzzleSecs < 60 
+                    ? `${window.puzzleSecs} segundos` 
+                    : `${Math.floor(window.puzzleSecs / 60)} min y ${window.puzzleSecs % 60} seg`;
+                    
+                setTimeout(() => {
+                    document.getElementById('juegosContenido').innerHTML = `
+                        <div class="text-center space-y-6 fade-in w-full max-w-sm">
+                            <p class="text-8xl pop-in">🧩</p>
+                            <h2 class="text-3xl font-black text-teal-400">¡Enhorabuena, lo has conseguido!</h2>
+                            <p class="text-xl text-gray-300">Has tardado <b class="text-white">${msg}</b> en montar el puzle de ${window.puzzleImg.name}.</p>
+                            <button onclick="window.iniciarPuzzle()" class="w-full p-4 bg-teal-600 text-white rounded-xl font-bold text-xl shadow-lg active:scale-95 transition">Jugar de nuevo</button>
+                            <button onclick="window.volverJuegos()" class="w-full p-4 bg-gray-700 text-white rounded-xl font-bold text-xl shadow-lg active:scale-95 transition">Volver al menú</button>
+                        </div>`;
+                }, 300);
+            }
+        };
+
         const ordenDiasSwipe = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'madrugada', 'viernes', 'resurreccion'];
         let touchstartX = 0;
         let touchendX = 0;
@@ -2629,7 +2890,6 @@
             
             let diaInicial = window.obtenerDiaReal();
             
-            // Timeout to allow Firebase settings to load if quick enough
             setTimeout(() => { window.seleccionarDia(diaInicial); }, 50);
         });
     </script>
