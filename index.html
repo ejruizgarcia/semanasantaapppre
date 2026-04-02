@@ -1552,7 +1552,7 @@
             document.getElementById('juegosContenido').innerHTML = `
                 <div class="space-y-4 w-full text-center fade-in">
                     <p class="text-teal-400 font-bold uppercase text-sm tracking-widest">${window.puzzleImg.name}</p>
-                    <div class="relative w-full max-w-[280px] aspect-[2/3] bg-gray-800 border-4 border-gray-700 rounded-lg overflow-hidden shadow-2xl mx-auto touch-none select-none" id="pBoard"></div>
+                    <div class="relative w-full max-w-[300px] aspect-[2/3] bg-gray-800 border-4 border-gray-700 rounded-lg overflow-hidden shadow-2xl mx-auto touch-none select-none" id="pBoard"></div>
                     <button onclick="window.volverJuegos()" class="text-gray-500 font-bold py-2 px-6 rounded-full bg-gray-800 border border-gray-700 mt-4 active:scale-95 transition">Abandonar</button>
                 </div>`;
                 
@@ -1574,7 +1574,7 @@
             if(!window.pEventsAdded) {
                 document.addEventListener('touchmove', window.pDragMove, {passive: false});
                 document.addEventListener('touchend', window.pDragEnd);
-                document.addEventListener('mousemove', window.pDragMove, {passive: false});
+                document.addEventListener('mousemove', window.pDragMove);
                 document.addEventListener('mouseup', window.pDragEnd);
                 window.pEventsAdded = true;
             }
