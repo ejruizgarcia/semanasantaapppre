@@ -76,6 +76,7 @@
             animation: slideInLeftSoft 0.3s ease-out forwards;
         }
         
+        /* Flip Card CSS para el Impostor */
         .flip-card {
             perspective: 1000px;
             touch-action: none;
@@ -101,6 +102,7 @@
             transform: rotateY(180deg);
         }
 
+        /* Cartas del Juego de Parejas */
         .mem-card {
             perspective: 1000px;
             cursor: pointer;
@@ -398,70 +400,80 @@
             </div>
         </div>
         <div class="flex-1 overflow-y-auto p-5">
-            <div class="max-w-[34rem] w-full mx-auto bg-white rounded-xl shadow-2xl border border-gray-100 p-6 space-y-6 slide-up relative z-10">
-                <button onclick="cerrarDetalle()" class="absolute top-4 right-4 text-rose-900 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-1.5 rounded-full transition">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-                <div class="border-b border-gray-100 pb-4">
-                    <div class="pr-8">
-                        <div class="flex items-center gap-2 mb-2">
-                            <h3 id="modalTituloInterior" class="text-2xl font-bold text-rose-900"></h3>
-                            <button onclick="toggleNombreOficial()" class="text-rose-600 bg-rose-100 hover:bg-rose-200 rounded-full p-1.5 transition">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            </button>
-                        </div>
-                        <div id="modalNombreOficialContainer" class="hidden mb-4 p-3 bg-rose-50 rounded-lg border border-rose-100">
-                            <p id="modalNombreOficial" class="text-sm text-rose-800 font-medium italic leading-relaxed"></p>
-                        </div>
-                    </div>
-                    <p id="modalSede" class="text-lg text-gray-800 font-medium mb-4 mt-2"></p>
-                    <div id="modalProgresoContainer" class="w-full">
-                        <div class="flex justify-between text-xs text-rose-800 font-bold mb-1">
-                            <span>Progreso en la calle</span>
-                            <span id="modalProgresoTexto">0%</span>
-                        </div>
-                        <div class="w-full bg-rose-100 rounded-full h-2.5 overflow-hidden shadow-inner">
-                            <div id="modalProgressBar" class="bg-rose-900 h-2.5 rounded-full transition-all duration-1000 ease-linear"></div>
-                        </div>
-                    </div>
-                </div>
+            <div class="max-w-[34rem] w-full mx-auto bg-white rounded-xl shadow-2xl border border-gray-100 pb-6 slide-up relative z-10 overflow-hidden flex flex-col">
                 
-                <div id="containerSalida" class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4 transition-colors duration-500">
-                    <p class="text-xs text-gray-500 uppercase font-bold mb-2">Salida</p>
-                    <div class="flex justify-between text-sm">
-                        <div><span class="text-gray-600 font-medium">Cruz de Guía:</span> <span id="modalSalidaCruz" class="font-bold text-gray-800 ml-1"></span></div>
-                        <div><span class="text-gray-600 font-medium">Último Paso:</span> <span id="modalSalidaPaso" class="font-bold text-gray-800 ml-1"></span></div>
-                    </div>
+                <div class="w-full h-32 sm:h-40 relative shrink-0 bg-gray-200">
+                    <img id="modalImagenCabecera" src="" alt="Cabecera Cofradía" class="w-full h-full object-cover object-center">
+                    <div class="absolute inset-0 bg-gradient-to-b from-black/40 to-transparent pointer-events-none"></div>
+                    <button onclick="cerrarDetalle()" class="absolute top-4 right-4 text-white hover:text-rose-200 bg-black/20 hover:bg-black/40 backdrop-blur-sm p-1.5 rounded-full transition z-20">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
                 </div>
 
-                <div id="containerCO" class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg shadow-sm mb-4 transition-colors duration-500">
-                    <p class="text-sm text-amber-800 uppercase font-bold tracking-wider mb-3">Carrera Oficial</p>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <p class="text-xs text-amber-700 uppercase font-bold mb-1 border-b border-amber-200 pb-1">Entrada</p>
-                            <div class="flex justify-between text-sm mb-1 mt-2"><span class="text-amber-900">Cruz de Guía:</span><span id="modalEntradaCOCruz" class="font-bold text-amber-800"></span></div>
-                            <div class="flex justify-between text-sm"><span class="text-amber-900">Último Paso:</span><span id="modalEntradaCOPaso" class="font-bold text-amber-800"></span></div>
+                <div class="p-6 pt-4 space-y-6">
+                    <div class="border-b border-gray-100 pb-4">
+                        <div class="pr-8">
+                            <div class="flex items-center gap-2 mb-2">
+                                <h3 id="modalTituloInterior" class="text-2xl font-bold text-rose-900"></h3>
+                                <button onclick="toggleNombreOficial()" class="text-rose-600 bg-rose-100 hover:bg-rose-200 rounded-full p-1.5 transition">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </button>
+                            </div>
+                            <div id="modalNombreOficialContainer" class="hidden mb-4 p-3 bg-rose-50 rounded-lg border border-rose-100">
+                                <p id="modalNombreOficial" class="text-sm text-rose-800 font-medium italic leading-relaxed"></p>
+                            </div>
                         </div>
-                        <div>
-                            <p class="text-xs text-amber-700 uppercase font-bold mb-1 border-b border-amber-200 pb-1">Salida</p>
-                            <div class="flex justify-between text-sm mb-1 mt-2"><span class="text-amber-900">Cruz de Guía:</span><span id="modalSalidaCOCruz" class="font-bold text-amber-800"></span></div>
-                            <div class="flex justify-between text-sm"><span class="text-amber-900">Último Paso:</span><span id="modalSalidaCOPaso" class="font-bold text-amber-800"></span></div>
+                        <p id="modalSede" class="text-lg text-gray-800 font-medium mb-4 mt-2"></p>
+                        <div id="modalProgresoContainer" class="w-full">
+                            <div class="flex justify-between text-xs text-rose-800 font-bold mb-1">
+                                <span>Progreso en la calle</span>
+                                <span id="modalProgresoTexto">0%</span>
+                            </div>
+                            <div class="w-full bg-rose-100 rounded-full h-2.5 overflow-hidden shadow-inner">
+                                <div id="modalProgressBar" class="bg-rose-900 h-2.5 rounded-full transition-all duration-1000 ease-linear"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                    
+                    <div id="containerSalida" class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4 transition-colors duration-500">
+                        <p class="text-xs text-gray-500 uppercase font-bold mb-2">Salida</p>
+                        <div class="flex justify-between text-sm">
+                            <div><span class="text-gray-600 font-medium">Cruz de Guía:</span> <span id="modalSalidaCruz" class="font-bold text-gray-800 ml-1"></span></div>
+                            <div><span class="text-gray-600 font-medium">Último Paso:</span> <span id="modalSalidaPaso" class="font-bold text-gray-800 ml-1"></span></div>
+                        </div>
+                    </div>
 
-                <div id="containerRecogida" class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4 transition-colors duration-500">
-                    <p class="text-xs text-gray-500 uppercase font-bold mb-2">Recogida</p>
-                    <div class="flex justify-between text-sm">
-                        <div><span class="text-gray-600 font-medium">Cruz de Guía:</span> <span id="modalRecogidaCruz" class="font-bold text-gray-800 ml-1"></span></div>
-                        <div><span class="text-gray-600 font-medium">Último Paso:</span> <span id="modalRecogidaPaso" class="font-bold text-gray-800 ml-1"></span></div>
+                    <div id="containerCO" class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg shadow-sm mb-4 transition-colors duration-500">
+                        <p class="text-sm text-amber-800 uppercase font-bold tracking-wider mb-3">Carrera Oficial</p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-xs text-amber-700 uppercase font-bold mb-1 border-b border-amber-200 pb-1">Entrada</p>
+                                <div class="flex justify-between text-sm mb-1 mt-2"><span class="text-amber-900">Cruz de Guía:</span><span id="modalEntradaCOCruz" class="font-bold text-amber-800"></span></div>
+                                <div class="flex justify-between text-sm"><span class="text-amber-900">Último Paso:</span><span id="modalEntradaCOPaso" class="font-bold text-amber-800"></span></div>
+                            </div>
+                            <div>
+                                <p class="text-xs text-amber-700 uppercase font-bold mb-1 border-b border-amber-200 pb-1">Salida</p>
+                                <div class="flex justify-between text-sm mb-1 mt-2"><span class="text-amber-900">Cruz de Guía:</span><span id="modalSalidaCOCruz" class="font-bold text-amber-800"></span></div>
+                                <div class="flex justify-between text-sm"><span class="text-amber-900">Último Paso:</span><span id="modalSalidaCOPaso" class="font-bold text-amber-800"></span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="containerRecogida" class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4 transition-colors duration-500">
+                        <p class="text-xs text-gray-500 uppercase font-bold mb-2">Recogida</p>
+                        <div class="flex justify-between text-sm">
+                            <div><span class="text-gray-600 font-medium">Cruz de Guía:</span> <span id="modalRecogidaCruz" class="font-bold text-gray-800 ml-1"></span></div>
+                            <div><span class="text-gray-600 font-medium">Último Paso:</span> <span id="modalRecogidaPaso" class="font-bold text-gray-800 ml-1"></span></div>
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <p id="modalItinerario" class="text-gray-700 leading-relaxed text-sm"></p>
                     </div>
                 </div>
-
-                <div class="pt-2">
-                    <p id="modalItinerario" class="text-gray-700 leading-relaxed text-sm"></p>
-                </div>
-                <button onclick="cerrarDetalle()" class="w-full bg-rose-950 text-white font-bold py-4 rounded-xl shadow-md hover:bg-rose-900 transition mt-4">Cerrar Ficha</button>
+            </div>
+            <div class="text-center pt-8 text-[10px] text-gray-400 font-medium">
+                App creada por @ejruizgarcia con la IA de Gemini.<br>Licencia Creative Commons CC BY-NC-SA 4.0
             </div>
         </div>
     </div>
@@ -542,6 +554,12 @@
     </script>
 
     <script>
+        window.formatTimeString = function(secs) {
+            const m = Math.floor(secs / 60);
+            const s = secs % 60;
+            return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+        };
+
         window.datosSemanaSanta = {
             domingo: [
                 { nombre: 'La Borriquita', nombreOficial: 'Hermandad Sacramental y Cofradía Lasaliana de Cristo Rey en su Triunfal Entrada en Jerusalén, María Santísima de la Estrella y San Juan Bautista de La Salle', sede: 'Capilla de Nuestra Señora de la Estrella', salidaCruz: '15:50', salidaPaso: '16:15', entradaCOCruz: '17:50', entradaCOPaso: '18:20', salidaCOCruz: '18:20', salidaCOPaso: '19:00', recogidaCruz: '21:40', recogidaPaso: '23:00', itinerario: 'Real, Sánchez Cerquero, Calderón de la Barca, Cayetano del Toro, General García de la Herrán, Rosario, Plaza de la Iglesia, Real, Carrera Oficial, General Valdés, Sánchez Cerquero, Tomás del Valle, Pece Casas, Bravo, Lanuza, Héroes del Baleares, Real y a su templo.' },
@@ -620,13 +638,13 @@
             { q: "¿Qué cofradía de gloria fue fundada a finales de los 90 y fue amadrinada por Puerto Real para ser filial en 2006?", a: "La Hermandad del Rocío.", e: ["La Hermandad del Carmen.", "La Asociación Josefina.", "La Hermandad de la Divina Pastora."] },
             { q: "¿En qué siglo comenzó a tener estrechos y documentados vínculos la Hermandad del Nazareno con el poder municipal?", a: "Siglo XVIII.", e: ["Siglo XIX.", "Siglo XVII.", "Siglo XX."] },
             { q: "¿Qué corporación basó sus primitivos estatutos (1789) en los de una entidad homónima establecida en la parroquia del Rosario de Cádiz?", a: "La Congregación de Esclavos de San José.", e: ["La Hermandad del Ecce Homo.", "La Hermandad de la Misericordia.", "La Orden Tercera de Servitas."] },
-            { q: "¿Quién fue the escultor isleño del grupo escultórico inicial de la Virgen de la Caridad en 1943?", a: "Antonio Bey Olvera.", e: ["Alfonso Berraquero García.", "Antonio Castillo Lastrucci.", "Luis Álvarez Duarte."] },
+            { q: "¿Quién fue el escultor isleño del grupo escultórico inicial de la Virgen de la Caridad en 1943?", a: "Antonio Bey Olvera.", e: ["Alfonso Berraquero García.", "Antonio Castillo Lastrucci.", "Luis Álvarez Duarte."] },
             { q: "¿Qué miembro de la realeza fue nombrado Prioste de Honor de la Hermandad de la Soledad en 1975?", a: "S.M. el Rey Juan Carlos I.", e: ["S.M. el Rey Alfonso XII.", "S.M. el Rey Alfonso XIII.", "S.M. el Rey Fernando VII."] },
             { q: "¿Qué hermandad isleña organiza desde 1976 una devota procesión conocida como el 'Corpus chiquito' por su barrio?", a: "La Misericordia.", e: ["El Gran Poder.", "La Caridad.", "La Expiración."] },
             { q: "¿Qué hermandad sacaba tras el paso del Señor una centuria de soldados romanos durante varias décadas a partir de 1916?", a: "La Columna.", e: ["El Ecce Homo.", "El Prendimiento.", "El Santo Entierro."] },
             { q: "¿Qué cofradía organizaba un prestigioso certamen literario para jóvenes a nivel nacional llamado premio «Padre José María Franco»?", a: "Los Estudiantes (Afligidos).", e: ["Cristo Rey.", "La Oración en el Huerto.", "El Gran Poder."] },
             { q: "¿Qué cofradía rindió culto y procesionó a una antigua Virgen de las Mercedes reformada como dolorosa entre 1985 y 1997?", a: "Los Desamparados.", e: ["La Caridad.", "La Columna.", "El Rosario Doloroso."] },
-            { q: "¿Cuál es the lema latino que figura en el sudario del escudo de la Hermandad de la Soledad?", a: "Stabat Mater.", e: ["Sin cruz no hay gloria ninguna.", "Rezad el rosario.", "Iuxta Crucem."] },
+            { q: "¿Cuál es el lema latino que figura en el sudario del escudo de la Hermandad de la Soledad?", a: "Stabat Mater.", e: ["Sin cruz no hay gloria ninguna.", "Rezad el rosario.", "Iuxta Crucem."] },
             { q: "¿Qué título cristífero adoptó oficialmente la Hermandad de la Soledad al renovar sus reglas en 1909?", a: "Descendimiento de Nuestro Señor Jesucristo.", e: ["Santo Entierro de Nuestro Señor Jesucristo.", "Traslado al Sepulcro de Cristo.", "Divina Misericordia del Señor."] },
             { q: "¿Qué escultor restauró profundamente la imagen del Cristo de la Redención (Soledad) en el año 1999?", a: "Juan Manuel Miñarro López.", e: ["Alfonso Berraquero García.", "Luis Álvarez Duarte.", "Antonio Castillo Lastrucci."] },
             { q: "¿Desde qué año el municipio de San Fernando rinde la función del Voto a San José como patrón debido a una epidemia de fiebre amarilla?", a: "1800.", e: ["1766.", "1802.", "1789."] },
@@ -650,7 +668,7 @@
             { q: "¿Quién labró la nueva imagen del titular de la Hermandad de la Sagrada Resurrección bendecida en el año 2006?", a: "Alfonso Berraquero.", e: ["Antonio Dubé de Luque.", "Luis González Rey.", "Juan Carlos García Díaz."] },
             { q: "¿Los penitentes de qué cofradía isleña visten dos túnicas distintas, una para las secciones del Cristo y otra para las secciones de la Virgen?", a: "El Ecce Homo.", e: ["La Columna.", "El Prendimiento.", "Los Estudiantes."] },
             { q: "¿En qué hermandad se levantó y bendijo un vistoso retablo neobarroco tallado por Guzmán Bejarano en el año 1959?", a: "Medinaceli.", e: ["La Misericordia.", "Los Afligidos.", "La Expiración."] },
-            { q: "¿Cuál es the cofradía que ostenta históricamente el título del Tercio del Sur de Infantería de Marina como Hermano Honorario?", a: "El Perdón.", e: ["La Misericordia.", "La Expiración.", "La Caridad."] },
+            { q: "¿Cuál es la cofradía que ostenta históricamente el título del Tercio del Sur de Infantería de Marina como Hermano Honorario?", a: "El Perdón.", e: ["La Misericordia.", "La Expiración.", "La Caridad."] },
             { q: "¿Qué asociación de fieles ha establecido su día de salida en el Sábado de Pasión?", a: "Coronación de Espinas.", e: ["María Auxiliadora.", "Santa Elena.", "San José."] },
             { q: "¿Qué cofradía portaba en sus inicios unas características cruces de penitencia en sus manos en lugar de los tradicionales cirios de luz?", a: "El Perdón.", e: ["La Expiración.", "El Rosario Doloroso.", "Los Desamparados."] },
             { q: "¿En el paso de misterio de qué cofradía figuran personajes secundarios como Barrabás, Claudia Prócula y un esclavo etíope?", a: "En el Ecce Homo.", e: ["En el Prendimiento.", "En la Columna.", "En los Afligidos."] },
@@ -762,7 +780,7 @@
             { q: "¿Qué especias llevaron para ungir el cuerpo de Jesús?", a: "Mirra y áloe", e: ["Incienso y oro", "Romero y tomillo", "Canela y clavo"] },
             { q: "¿Qué pusieron en la entrada del sepulcro de Jesús?", a: "Una gran piedra redonda", e: ["Una puerta de madera", "Una reja de hierro", "Un muro de ladrillos"] },
             { q: "¿Por qué los sumos sacerdotes pidieron a Pilato poner guardias en el sepulcro?", a: "Por miedo a que los discípulos robaran el cuerpo", e: ["Para proteger a los animales salvajes", "Para evitar que la familia llorara", "Para honrar a Jesús"] },
-            { q: "¿Quién fue the primera persona en ver a Jesús resucitado?", a: "María Magdalena", e: ["La Virgen María", "Pedro", "Juan"] },
+            { q: "¿Quién fue la primera persona en ver a Jesús resucitado?", a: "María Magdalena", e: ["La Virgen María", "Pedro", "Juan"] },
             { q: "¿Qué día de la semana resucitó Jesús?", a: "El primer día de la semana (Domingo)", e: ["El sábado", "El viernes", "El lunes"] },
             { q: "¿Cómo llamamos a la semana en la que recordamos la Pasión, Muerte y Resurrección?", a: "Semana Santa", e: ["Semana de Pascua", "Tiempo de Cuaresma", "Adviento"] },
             { q: "¿Qué celebración marca el inicio de la Cuaresma, tiempo de preparación para la Pasión?", a: "Miércoles de Ceniza", e: ["Jueves Lardero", "Domingo de Ramos", "Día de Todos los Santos"] },
@@ -777,7 +795,7 @@
             { q: "¿Qué es la Vigilia Pascual?", a: "La celebración más importante, en la noche del Sábado Santo esperando la Resurrección", e: ["Una misa de luto por la muerte de Jesús", "El lavado de pies a los pobres", "Una procesión con la cruz"] },
             { q: "¿Qué cirio se enciende en la Vigilia Pascual representando a Cristo Resucitado?", a: "El Cirio Pascual", e: ["El Cirio Bautismal", "La Vela de Adviento", "El Velón de San Juan"] },
             { q: "¿A qué ciudad se dirigían dos discípulos cuando Jesús resucitado se les apareció?", a: "A Emaús", e: ["A Jericó", "A Belén", "A Nazaret"] },
-            { q: "¿Cómo reconozcan los discípulos de Emaús a Jesús?", a: "Al partir el pan", e: ["Por su voz", "Por sus heridas", "Por su ropa"] },
+            { q: "¿Cómo reconocieron los discípulos de Emaús a Jesús?", a: "Al partir el pan", e: ["Por su voz", "Por sus heridas", "Por su ropa"] },
             { q: "¿Qué apóstol no creyó que Jesús había resucitado hasta tocar sus heridas?", a: "Tomás", e: ["Mateo", "Felipe", "Bartolomé"] },
             { q: "¿Qué les dijo Jesús a los apóstoles al aparecerse tras su Resurrección?", a: "La paz esté con vosotros", e: ["¿Por qué lloráis?", "Id a dormir", "No tengáis miedo de Roma"] },
             { q: "¿Qué mandato les dio Jesús a los apóstoles antes de subir al cielo?", a: "Id y haced discípulos a todos los pueblos, bautizándolos", e: ["Quedaos en Jerusalén para siempre", "Escribid todo lo que he hecho", "Construid un gran templo de oro"] },
@@ -895,7 +913,7 @@
         ];
 
         window.bancoImagenesParejas = [
-            'borriquita.png', 'estrella.png', 'columna.png', 'lagrimas.png', 'humildad.png', 'penas.png', 'medinaceli.png', 'trinidad.png', 'afligidos.png', 'eccehomo.png', 'salud.png', 'huerto.png', 'esperanza.png', 'caridad.png', 'prendimiento.png', 'buenfin.png', 'servitas.png', 'granpoder.png', 'amor.png', 'veracruz.png'
+            'borriquita.png', 'estrella.png', 'columna.png', 'lagrimas.png', 'humildad.png', 'penas.png', 'medinaceli.png', 'trinidad.png', 'afligidos.png', 'eccehomo.png', 'salud.png', 'huerto.png', 'graciayesperanza.png', 'caridad.png', 'prendimiento.png', 'buenfin.png', 'servitas.png', 'granpoder.png', 'amor.png', 'veracruz.png', 'misericordia.png', 'piedad.png', 'paz.png', 'perdon.png', 'trescaidas.png', 'expiracion.png', 'esperanza.png', 'redencion.png', 'soledad.png', 'santoentierro.png', 'mayordolor.png', 'sangre.png', 'desamparados.png', 'rosario.png', 'resucitado.png'
         ];
 
         window.bancoFlash = [
@@ -911,14 +929,29 @@
             { file: 'eccehomo.png', name: 'Ecce Homo' },
             { file: 'salud.png', name: 'Salud' },
             { file: 'huerto.png', name: 'Huerto' },
-            { file: 'esperanza.png', name: 'Esperanza' },
+            { file: 'graciayesperanza.png', name: 'Gracia y Esperanza' },
             { file: 'caridad.png', name: 'Caridad' },
             { file: 'prendimiento.png', name: 'Prendimiento' },
             { file: 'buenfin.png', name: 'Buen Fin' },
             { file: 'servitas.png', name: 'Servitas' },
             { file: 'granpoder.png', name: 'Gran Poder' },
             { file: 'amor.png', name: 'Amor' },
-            { file: 'veracruz.png', name: 'Vera Cruz' }
+            { file: 'veracruz.png', name: 'Vera Cruz' },
+            { file: 'misericordia.png', name: 'Misericordia' },
+            { file: 'piedad.png', name: 'Piedad' },
+            { file: 'paz.png', name: 'Paz' },
+            { file: 'perdon.png', name: 'Perdón' },
+            { file: 'trescaidas.png', name: 'Tres Caídas' },
+            { file: 'expiracion.png', name: 'Expiración' },
+            { file: 'esperanza.png', name: 'Esperanza' },
+            { file: 'redencion.png', name: 'Redención' },
+            { file: 'soledad.png', name: 'Soledad' },
+            { file: 'santoentierro.png', name: 'Santo Entierro' },
+            { file: 'mayordolor.png', name: 'Mayor Dolor' },
+            { file: 'sangre.png', name: 'Sangre' },
+            { file: 'desamparados.png', name: 'Desamparados' },
+            { file: 'rosario.png', name: 'Rosario' },
+            { file: 'resucitado.png', name: 'Resucitado' }
         ];
 
         let progresoInterval;
@@ -1120,6 +1153,7 @@
             if (direccion === 'left') animClass = 'slide-in-left-soft';
 
             const barrasParaActualizar = [];
+
             cofradiasOrdenadas.forEach((cof) => {
                 const animWrapper = document.createElement('div');
                 animWrapper.className = `${animClass} w-full`;
@@ -1266,6 +1300,27 @@
         window.mostrarDetalle = function(dia, nombre) {
             window.ocultarBotonesFlotantes();
             const cof = window.datosSemanaSanta[dia].find(c => c.nombre === nombre);
+            
+            const imgMap = { 'La Borriquita': 'borriquita.png', 'Columna': 'columna.png', 'Humildad y Paciencia': 'humildad.png', 'Medinaceli': 'medinaceli.png', 'Afligidos (Estudiantes)': 'afligidos.png', 'Ecce-Homo': 'eccehomo.png', 'Huerto': 'huerto.png', 'Caridad': 'caridad.png', 'Prendimiento': 'prendimiento.png', 'Servitas': 'servitas.png', 'Gran Poder': 'granpoder.png', 'Vera Cruz': 'veracruz.png', 'Tres Caídas': 'trescaidas.png', 'Perdón': 'perdon.png', 'Misericordia': 'misericordia.png', 'Expiración (Silencio)': 'expiracion.png', 'Nazareno': 'nazareno.png', 'Soledad': 'soledad.png', 'Santo Entierro': 'santoentierro.png', 'Desamparados': 'desamparados.png', 'Rosario': 'rosario.png', 'Resurrección': 'resucitado.png' };
+            let imgFile = imgMap[nombre] || 'cartel.jpg';
+            const imgEl = document.getElementById('modalImagenCabecera');
+            if(imgEl) {
+                imgEl.src = `https://raw.githubusercontent.com/ejruizgarcia/images/main/${imgFile}`;
+                imgEl.onerror = () => { imgEl.src = 'https://raw.githubusercontent.com/ejruizgarcia/images/main/cartel.jpg'; };
+                
+                const posicionesEspeciales = {
+                    'Santo Entierro': '50% 50%',
+                    'Huerto': '50% 0%',
+                    'Gran Poder': '50% 0%',
+                    'Vera Cruz': '50% 40%',
+                    'Perdón': '50% 15%',
+                    'Expiración (Silencio)': '50% 0%',
+                    'Nazareno': '50% 15%',
+                    'Desamparados': '50% 40%'
+                };
+                imgEl.style.objectPosition = posicionesEspeciales[nombre] || '50% 25%';
+            }
+
             document.getElementById('modalTituloInterior').innerText = cof.nombre;
             document.getElementById('modalNombreOficial').innerText = cof.nombreOficial;
             document.getElementById('modalNombreOficialContainer').classList.add('hidden');
@@ -1446,22 +1501,33 @@
 
         window.mostrarTarjetaImpostor = function() {
             const p = window.impPlayers[window.impTurn];
-            document.getElementById('juegosContenido').innerHTML = `<div class="w-full max-w-sm flex flex-col items-center gap-4 fade-in text-center"><div><h3 class="text-5xl font-bold text-rose-500">${p}</h3></div><div class="flip-card mt-2 select-none mx-auto w-48 h-64" id="impFlipCard"><div class="flip-card-inner shadow-xl rounded-2xl" id="impCardInner"><div class="flip-card-front bg-gray-800 border border-gray-600 rounded-2xl flex flex-col items-center justify-center"><span class="text-6xl mb-4">❓</span><p class="text-sm font-bold text-gray-300">Rol oculto</p></div><div class="flip-card-back bg-rose-950 border border-rose-800 rounded-2xl flex flex-col items-center justify-center p-4" id="impCardBack"></div></div></div><button id="impRevealBtn" class="w-full bg-rose-600 text-white font-bold py-4 rounded-xl shadow-lg mt-2 text-lg">Pulsa aquí</button><p class="text-sm text-gray-500 italic opacity-0" id="impReleaseText">Suelta para ocultar</p></div>`;
+            document.getElementById('juegosContenido').innerHTML = `<div class="w-full max-w-sm flex flex-col items-center gap-4 fade-in text-center"><div><h3 class="text-5xl font-bold text-rose-500">${p}</h3></div><div class="flip-card mt-2 select-none mx-auto w-48 h-64" id="impFlipCard"><div class="flip-card-inner shadow-xl rounded-2xl" id="impCardInner"><div class="flip-card-front bg-gray-800 border border-gray-600 rounded-2xl flex flex-col items-center justify-center"><span class="text-6xl mb-4">❓</span><p class="text-sm font-bold text-gray-300">Rol oculto</p></div><div class="flip-card-back bg-rose-950 border border-rose-800 rounded-2xl flex flex-col items-center justify-center p-4" id="impCardBack"></div></div></div><button id="impRevealBtn" onclick="window.toggleTarjetaImpostor()" class="w-full bg-rose-600 text-white font-bold py-4 rounded-xl shadow-lg mt-2 text-lg select-none">Ver Tarjeta</button></div>`;
             window.prepararTarjetaImpostor();
         };
 
         window.prepararTarjetaImpostor = function() {
-            const card = document.getElementById('impFlipCard');
-            const releaseText = document.getElementById('impReleaseText');
             const cardBack = document.getElementById('impCardBack');
-            const revealBtn = document.getElementById('impRevealBtn');
             const isI = window.impIndices.includes(window.impTurn);
-            cardBack.innerHTML = isI ? `<span class="text-5xl mb-2">🕵️</span><p class="text-xl font-bold text-rose-400">ERES EL IMPOSTOR</p>` : `<span class="text-4xl mb-2">🤫</span><p class="text-gray-400 text-xs">Palabra Secreta</p><p class="text-2xl font-bold text-white mt-1">${window.impSecret}</p>`;
-            const hP = (e) => { e.preventDefault(); card.classList.add('flipped'); revealBtn.classList.add('bg-rose-800'); releaseText.classList.remove('opacity-0'); };
-            const hR = (e) => { if (!card.classList.contains('flipped')) return; e.preventDefault(); card.classList.remove('flipped'); revealBtn.classList.remove('bg-rose-800'); releaseText.classList.add('opacity-0'); window.removeEventListener('mouseup', window.impMouseUpHandler); window.removeEventListener('touchend', window.impTouchEndHandler); setTimeout(() => { window.impTurn++; if(window.impTurn < window.impPlayers.length) window.mostrarIntermedioImpostor(); else window.mostrarSorteoTurnoImpostor(); }, 600); };
-            revealBtn.addEventListener('mousedown', hP); revealBtn.addEventListener('touchstart', hP);
-            window.impMouseUpHandler = hR; window.impTouchEndHandler = hR;
-            window.addEventListener('mouseup', window.impMouseUpHandler); window.addEventListener('touchend', window.impTouchEndHandler);
+            cardBack.innerHTML = isI ? `<span class="text-5xl mb-2">🕵️</span><p class="text-xl font-bold text-rose-400 leading-tight">ERES EL IMPOSTOR</p><p class="text-gray-300 text-xs mt-2">Disimula bien</p>` : `<span class="text-4xl mb-2">🤫</span><p class="text-gray-400 text-xs uppercase tracking-wider">Palabra Secreta</p><p class="text-2xl font-bold text-white mt-1 leading-tight">${window.impSecret}</p>`;
+        };
+
+        window.toggleTarjetaImpostor = function() {
+            const card = document.getElementById('impFlipCard');
+            const btn = document.getElementById('impRevealBtn');
+            if (card.classList.contains('flipped')) {
+                card.classList.remove('flipped');
+                btn.classList.add('opacity-50', 'pointer-events-none');
+                btn.innerText = "Pasando...";
+                setTimeout(() => {
+                    window.impTurn++;
+                    if(window.impTurn < window.impPlayers.length) window.mostrarIntermedioImpostor();
+                    else window.mostrarSorteoTurnoImpostor();
+                }, 600);
+            } else {
+                card.classList.add('flipped');
+                btn.innerText = "Ocultar y continuar";
+                btn.classList.replace('bg-rose-600', 'bg-gray-700');
+            }
         };
 
         window.mostrarSorteoTurnoImpostor = function() {
@@ -1542,7 +1608,7 @@
 
         window.iniciarParejasMulti = function(p) {
             window.parejasPlayers = p.sort(() => Math.random() - 0.5).map(n => ({ nombre: n, puntos: 0, eliminado: false }));
-            window.parejasRound = 1; window.parejasTurn = 0; if (window.parejasPlayers.length > 1) window.mostrarSorteoTurnoParejas(); else window.flujoTurnoParejas();
+            window.parejasRound = 1; window.totalRondasParejas = 5; window.parejasTurn = 0; if (window.parejasPlayers.length > 1) window.mostrarSorteoTurnoParejas(); else window.flujoTurnoParejas();
         };
 
         window.mostrarSorteoTurnoParejas = function() {
@@ -1556,7 +1622,7 @@
             while(window.parejasTurn < window.parejasPlayers.length && window.parejasPlayers[window.parejasTurn].eliminado) window.parejasTurn++;
             if (window.parejasTurn >= window.parejasPlayers.length) { window.evaluarFinRondaParejas(); return; }
             const p = window.parejasPlayers[window.parejasTurn]; window.toggleDisclaimer(false);
-            document.getElementById('juegosContenido').innerHTML = `<div class="w-full max-w-sm flex flex-col items-center gap-8 fade-in text-center"><p class="text-xl text-gray-400">Ronda ${window.parejasRound}</p><h3 class="text-4xl font-bold text-rose-500">${p.nombre}</h3><p class="text-gray-400 mb-6">Encuentra las parejas.</p><button onclick="window.iniciarTableroParejas()" class="w-full bg-rose-600 text-white font-bold py-4 rounded-xl shadow-lg transition active:scale-95">Comenzar</button></div>`;
+            document.getElementById('juegosContenido').innerHTML = `<div class="w-full max-w-sm flex flex-col items-center gap-8 fade-in text-center"><p class="text-xl text-gray-400">Ronda ${window.parejasRound} de ${window.totalRondasParejas}</p><h3 class="text-4xl font-bold text-rose-500">${p.nombre}</h3><p class="text-gray-400 mb-6">Encuentra las parejas.</p><button onclick="window.iniciarTableroParejas()" class="w-full bg-rose-600 text-white font-bold py-4 rounded-xl shadow-lg transition active:scale-95">Comenzar</button></div>`;
         };
 
         window.iniciarTableroParejas = function() {
@@ -1606,13 +1672,14 @@
         };
 
         window.siguienteTurnoParejas = function() { window.parejasTurn++; window.flujoTurnoParejas(); };
-        window.evaluarFinRondaParejas = function() { const act = window.parejasPlayers.filter(p => !p.eliminado); window.mostrarClasificacionParejas(act.length <= 1); };
+        window.evaluarFinRondaParejas = function() { const act = window.parejasPlayers.filter(p => !p.eliminado); const esFinal = (window.parejasPlayers.length > 1 && act.length <= 1) || (window.parejasPlayers.length === 1 && act.length === 0) || window.parejasRound >= window.totalRondasParejas; window.mostrarClasificacionParejas(esFinal); };
 
         window.mostrarClasificacionParejas = function(esF) {
             window.toggleDisclaimer(true); const ranking = [...window.parejasPlayers].sort((a,b) => b.puntos - a.puntos);
             let html = ranking.map(p => `<div class="flex justify-between items-center p-4 bg-gray-800 rounded-xl mb-2 ${p.eliminado?'opacity-50':''}"><div><span class="text-white font-bold">${p.nombre}</span></div><span class="text-rose-400 font-black">${p.puntos} pts</span></div>`).join('');
             let btnH = esF ? `<button onclick="window.volverJuegos()" class="w-full bg-gray-600 text-white font-bold py-4 rounded-xl mt-4">Menú</button>` : `<button onclick="window.avanzarRondaParejas()" class="w-full bg-rose-600 text-white font-bold py-4 rounded-xl mt-4">Ronda ${window.parejasRound + 1}</button>`;
-            document.getElementById('juegosContenido').innerHTML = `<div class="w-full max-w-sm flex flex-col fade-in"><h2 class="text-2xl font-bold text-white mb-6 text-center">Clasificación</h2>${html}${btnH}</div>`;
+            let tituloHTML = esF ? `<h2 class="text-3xl font-black text-rose-400 mb-2 text-center">¡Juego Terminado!</h2><p class="text-gray-300 text-center mb-6">Clasificación Final</p>` : `<h3 class="text-2xl font-bold text-white mb-2 text-center">Clasificación Parcial</h3><p class="text-gray-400 text-center mb-6">Fin de la Ronda ${window.parejasRound} de ${window.totalRondasParejas}</p>`;
+            document.getElementById('juegosContenido').innerHTML = `<div class="w-full max-w-sm flex flex-col fade-in">${tituloHTML}<div class="flex flex-col">${html}</div>${btnH}</div>`;
         };
         window.avanzarRondaParejas = function() { window.parejasRound++; window.parejasTurn = 0; window.flujoTurnoParejas(); };
 
@@ -1642,7 +1709,15 @@
             document.getElementById('juegosContenido').innerHTML = `<div class="w-full max-w-sm flex flex-col items-center gap-8 fade-in text-center"><p class="text-2xl text-gray-400">Atención...</p><h2 class="text-9xl font-black text-orange-500 pop-in" id="fC">3</h2></div>`;
             let ct = 3; window.flashCountdownTimer = setInterval(() => { ct--; if (ct > 0) { const el = document.getElementById('fC'); if(el) { el.innerText = ct; el.classList.remove('pop-in'); void el.offsetWidth; el.classList.add('pop-in'); } } else {
                 clearInterval(window.flashCountdownTimer); document.getElementById('juegosContenido').innerHTML = `<div class="absolute inset-0 z-[80] bg-black flex items-center justify-center p-2"><img src="https://raw.githubusercontent.com/ejruizgarcia/images/main/${cor.file}" class="w-full h-full object-cover rounded-2xl"></div>`;
-                setTimeout(() => window.mostrarOpcionesFlash(), 170);
+                
+                let tiempoExposicion = 170;
+                if (window.flashPlayers.length === 1 && window.flashRound >= 5) {
+                    tiempoExposicion = 150;
+                } else if (window.flashPlayers.length > 1 && window.flashRound >= 4) {
+                    tiempoExposicion = 150;
+                }
+
+                setTimeout(() => window.mostrarOpcionesFlash(), tiempoExposicion);
             }}, 1000);
         };
 
@@ -1661,24 +1736,6 @@
             }
             if (esC) window.flashPlayers[window.flashTurn].puntos += 100;
             document.getElementById('contF').classList.remove('hidden');
-        };
-
-        window.siguienteTurnoFlash = function() {
-            window.flashTurn++; if(window.flashTurn < window.flashPlayers.length) window.flujoTurnoFlash();
-            else { if (window.flashPlayers.length === 1) { window.flashRound++; if(window.flashRound > window.totalRondasFlash) window.mostrarPantallaVictoriaFlash(); else { window.flashTurn = 0; window.flujoTurnoFlash(); } }
-                else { if (window.flashRound >= window.totalRondasFlash) window.mostrarPantallaVictoriaFlash(); else window.mostrarClasificacionFlash(false); } }
-        };
-
-        window.mostrarClasificacionFlash = function(esF) {
-            window.toggleDisclaimer(true); const ranking = [...window.flashPlayers].sort((a,b) => b.puntos - a.puntos);
-            let html = ranking.map(p => `<div class="flex justify-between items-center p-4 bg-gray-800 rounded-xl mb-2"><div><span class="text-white font-bold">${p.nombre}</span></div><span class="font-black text-orange-400">${p.puntos} pts</span></div>`).join('');
-            let btnH = esF ? `<button onclick="window.volverJuegos()" class="w-full bg-gray-600 text-white font-bold py-4 rounded-xl mt-4">Menú</button>` : `<button onclick="window.avanzarRondaFlash()" class="w-full bg-orange-600 text-white font-bold py-4 rounded-xl mt-4">Ronda ${window.flashRound + 1}</button>`;
-            document.getElementById('juegosContenido').innerHTML = `<div class="w-full max-w-sm flex flex-col fade-in"><h2 class="text-2xl font-bold text-white mb-6 text-center">Clasificación</h2>${html}${btnH}</div>`;
-        };
-        window.avanzarRondaFlash = function() { window.flashRound++; window.flashTurn = 0; window.flujoTurnoFlash(); };
-        window.mostrarPantallaVictoriaFlash = function() {
-            window.toggleDisclaimer(true); const ranking = [...window.flashPlayers].sort((a,b) => b.puntos - a.puntos);
-            document.getElementById('juegosContenido').innerHTML = `<div class="w-full max-w-sm flex flex-col items-center text-center py-4 fade-in"><div class="text-7xl mb-4 pop-in">🏆</div><h2 class="text-3xl font-black text-orange-400 mb-4">¡Terminado!</h2><button onclick="window.mostrarClasificacionFlash(true)" class="w-full bg-orange-500 text-gray-900 font-bold py-4 rounded-xl mb-4">Ver clasificación</button><button onclick="window.volverJuegos()" class="w-full bg-gray-700 text-white font-bold py-4 rounded-xl">Menú</button></div>`;
         };
 
         // LÓGICA PUZLE DESLIZANTE 2X3 DRAG AND DROP
@@ -1700,7 +1757,7 @@
 
         window.jugarPuzleTurno = () => {
             const hTimer = document.getElementById('juegosHeaderTimer'); hTimer.classList.remove('hidden'); hTimer.innerText = '00:00';
-            window.pzImg = bancoFlash[Math.floor(Math.random()*bancoFlash.length)];
+            window.pzImg = window.bancoFlash[Math.floor(Math.random()*window.bancoFlash.length)];
             window.pzGrid = [0,1,2,3,4,5]; let empty = 5;
             for(let i=0; i<150; i++) {
                 const adj = []; if(empty%2>0) adj.push(empty-1); if(empty%2<1) adj.push(empty+1);
@@ -1709,21 +1766,21 @@
                 [window.pzGrid[empty], window.pzGrid[next]] = [window.pzGrid[next], window.pzGrid[empty]]; empty = next;
             }
             window.pzSecs = 0; clearInterval(window.puzzleTimer);
-            window.puzzleTimer = setInterval(() => { window.pzSecs++; let m=Math.floor(pzSecs/60), s=pzSecs%60; hTimer.innerText = `${m<10?'0':''}${m}:${s<10?'0':''}${s}`; }, 1000);
+            window.puzzleTimer = setInterval(() => { window.pzSecs++; hTimer.innerText = window.formatTimeString(window.pzSecs); }, 1000);
             window.initPzUI();
         };
 
         window.initPzUI = () => {
             document.getElementById('juegosContenido').innerHTML = `
                 <div class="space-y-4 w-full text-center">
-                    <div class="bg-gray-800 p-3 rounded-xl border border-gray-700 text-teal-400 font-bold uppercase text-xs mx-auto max-w-[280px]">Ronda ${pzRound} - ${pzPlayers[pzTurn].nombre}</div>
+                    <div class="bg-gray-800 p-3 rounded-xl border border-gray-700 text-teal-400 font-bold uppercase text-xs mx-auto max-w-[280px]">Ronda ${window.pzRound} - ${window.pzPlayers[window.pzTurn].nombre}</div>
                     <div class="relative w-full max-w-[280px] aspect-[2/3] bg-gray-800 border-4 border-gray-700 rounded-lg overflow-hidden shadow-2xl mx-auto touch-none select-none" id="pzBoard"></div>
                     <button onclick="window.rendirsePz()" class="w-full max-w-[280px] p-3 bg-gray-800 border border-gray-700 rounded-xl text-gray-400 font-bold">Me rindo</button>
                 </div>`;
             for(let v=0; v<5; v++) {
                 const d = document.createElement('div'); d.id = 'pzP_'+v;
                 d.className = "absolute w-[50%] h-[33.333%] border border-black/30 bg-cover transition-transform duration-200 cursor-pointer z-10";
-                d.style.backgroundImage = `url('https://raw.githubusercontent.com/ejruizgarcia/images/main/${pzImg.file}')`;
+                d.style.backgroundImage = `url('https://raw.githubusercontent.com/ejruizgarcia/images/main/${window.pzImg.file}')`;
                 d.style.backgroundSize = "200% 300%";
                 d.style.backgroundPosition = `${(v%2)*100}% ${Math.floor(v/2)*50}%`;
                 d.addEventListener('touchstart', window.pzDS, {passive: false}); d.addEventListener('mousedown', window.pzDS);
@@ -1750,36 +1807,36 @@
         };
 
         window.pzDM = (e) => {
-            if(!pzDrag.active) return; e.preventDefault();
+            if(!window.pzDrag.active) return; e.preventDefault();
             const t = e.type.includes('touch') ? e.touches[0] : e;
-            const dx = t.clientX - pzDrag.startX, dy = t.clientY - pzDrag.startY;
-            const idx = parseInt(pzDrag.el.dataset.idx), em = pzGrid.indexOf(5);
+            const dx = t.clientX - window.pzDrag.startX, dy = t.clientY - window.pzDrag.startY;
+            const idx = parseInt(window.pzDrag.el.dataset.idx), em = window.pzGrid.indexOf(5);
             const r1 = Math.floor(idx/2), c1 = idx%2, r2 = Math.floor(em/2), c2 = em%2;
             if(Math.abs(r1-r2)+Math.abs(c1-c2)===1) {
                 let mx=0, my=0;
-                if(r1===r2){ if(c1<c2) mx=Math.max(0,Math.min(dx, pzDrag.el.offsetWidth)); else mx=Math.min(0,Math.max(dx, -pzDrag.el.offsetWidth)); }
-                else{ if(r1<r2) my=Math.max(0,Math.min(dy, pzDrag.el.offsetHeight)); else my=Math.min(0,Math.max(dy, -pzDrag.el.offsetHeight)); }
-                pzDrag.el.style.transform = `translate(calc(${c1*100}% + ${mx}px), calc(${r1*100}% + ${my}px))`;
+                if(r1===r2){ if(c1<c2) mx=Math.max(0,Math.min(dx, window.pzDrag.el.offsetWidth)); else mx=Math.min(0,Math.max(dx, -window.pzDrag.el.offsetWidth)); }
+                else{ if(r1<r2) my=Math.max(0,Math.min(dy, window.pzDrag.el.offsetHeight)); else my=Math.min(0,Math.max(dy, -window.pzDrag.el.offsetHeight)); }
+                window.pzDrag.el.style.transform = `translate(calc(${c1*100}% + ${mx}px), calc(${r1*100}% + ${my}px))`;
             }
         };
 
         window.pzDE = (e) => {
-            if(!pzDrag.active) return; const el = pzDrag.el; pzDrag.active = false;
+            if(!window.pzDrag.active) return; const el = window.pzDrag.el; window.pzDrag.active = false;
             el.classList.add('transition-transform'); el.style.zIndex = '10';
             const t = e.type.includes('touch') ? e.changedTouches[0] : e;
-            const dx = t.clientX - pzDrag.startX, dy = t.clientY - pzDrag.startY;
+            const dx = t.clientX - window.pzDrag.startX, dy = t.clientY - window.pzDrag.startY;
             if(Math.abs(dx)>el.offsetWidth*0.3 || Math.abs(dy)>el.offsetHeight*0.3 || (Math.abs(dx)<10 && Math.abs(dy)<10)) window.moverPz(parseInt(el.dataset.idx));
             else window.updPzUI();
         };
 
         window.moverPz = (idx) => {
-            const em = pzGrid.indexOf(5);
+            const em = window.pzGrid.indexOf(5);
             const r1 = Math.floor(idx/2), c1 = idx%2, r2 = Math.floor(em/2), c2 = em%2;
-            if(Math.abs(r1-r2)+Math.abs(c1-c2)===1){ [pzGrid[idx], pzGrid[em]] = [pzGrid[em], pzGrid[idx]]; }
+            if(Math.abs(r1-r2)+Math.abs(c1-c2)===1){ [window.pzGrid[idx], window.pzGrid[em]] = [window.pzGrid[em], window.pzGrid[idx]]; }
             window.updPzUI();
-            if(pzGrid.every((v,i)=>v===i)){
+            if(window.pzGrid.every((v,i)=>v===i)){
                 clearInterval(window.puzzleTimer); document.getElementById('juegosHeaderTimer').classList.add('hidden');
-                let s = Math.max(50, 500-(pzSecs*2)); pzPlayers[pzTurn].pts += s;
+                let s = Math.max(50, 500-(window.pzSecs*2)); window.pzPlayers[window.pzTurn].pts += s;
                 setTimeout(() => {
                     document.getElementById('juegosContenido').innerHTML = `<div class="text-center space-y-6 fade-in"><p class="text-7xl">🧩</p><h2 class="text-3xl font-black text-teal-400">¡COMPLETADO!</h2><p class="text-xl">Sumas <b>${s} pts</b></p><button onclick="window.nextPzTurn()" class="w-full p-5 bg-teal-600 rounded-xl font-bold uppercase">Continuar</button></div>`;
                 }, 300);
@@ -1788,12 +1845,12 @@
 
         window.rendirsePz = () => { clearInterval(window.puzzleTimer); document.getElementById('juegosHeaderTimer').classList.add('hidden'); window.nextPzTurn(); };
         window.nextPzTurn = () => {
-            pzTurn++; if(pzTurn>=pzPlayers.length){ pzTurn=0; pzRound++; }
-            if(pzRound>2) window.finPuzzle(); else window.flujoPuzzle();
+            window.pzTurn++; if(window.pzTurn>=window.pzPlayers.length){ window.pzTurn=0; window.pzRound++; }
+            if(window.pzRound>2) window.finPuzzle(); else window.flujoPuzzle();
         };
 
         window.finPuzzle = () => {
-            const rk = [...pzPlayers].sort((a,b)=>b.pts-a.pts);
+            const rk = [...window.pzPlayers].sort((a,b)=>b.pts-a.pts);
             document.getElementById('juegosContenido').innerHTML = `<div class="text-center space-y-6 w-full"><p class="text-6xl">🏆</p><h2 class="text-3xl font-black text-teal-400 uppercase">RESULTADOS</h2><div class="space-y-3">${rk.map(r => `<div class="flex justify-between p-4 bg-gray-800 rounded-xl border border-gray-700"><span>${r.nombre}</span><b>${r.pts} pts</b></div>`).join('')}</div><button onclick="volverJuegos()" class="w-full p-5 bg-gray-700 rounded-xl font-bold">SALIR</button></div>`;
         };
 
