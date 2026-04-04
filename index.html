@@ -264,10 +264,6 @@
                 </div>
                 <div class="p-4 bg-white rounded-xl shadow-sm border border-gray-100 flex gap-3 items-start">
                     <span class="text-amber-500 mt-0.5">✨</span>
-                    <p class="text-gray-700 font-medium">Nuevo modo competición en el juego de parejas cofrades.</p>
-                </div>
-                <div class="p-4 bg-white rounded-xl shadow-sm border border-gray-100 flex gap-3 items-start">
-                    <span class="text-amber-500 mt-0.5">✨</span>
                     <p class="text-gray-700 font-medium">Novedades en el juego del impostor: 2 impostores a partir de 6 jugadores y cambio de diseño de las tarjetas de palabras.</p>
                 </div>
                 <div class="p-4 bg-white rounded-xl shadow-sm border border-gray-100 flex gap-3 items-start">
@@ -439,10 +435,12 @@
                         </div>
                     </div>
 
-                    <div class="pt-2">
+                    <div class="pt-2 px-6">
                         <p id="modalItinerario" class="text-gray-700 leading-relaxed text-sm"></p>
                     </div>
-                    <button onclick="cerrarDetalle()" class="w-full bg-rose-950 text-white font-bold py-4 rounded-xl shadow-md hover:bg-rose-900 transition mt-4">Cerrar Ficha</button>
+                    <div class="px-6 mt-4">
+                        <button onclick="cerrarDetalle()" class="w-full bg-rose-950 text-white font-bold py-4 rounded-xl shadow-md hover:bg-rose-900 transition">Cerrar Ficha</button>
+                    </div>
                 </div>
             </div>
             <div class="text-center pt-8 text-[10px] text-gray-400 font-medium">
@@ -464,7 +462,7 @@
         <div class="flex-1 overflow-y-auto p-5 flex flex-col items-center relative">
             <div id="juegosContenido" class="w-full max-w-sm flex flex-col items-center justify-center gap-6 z-10 flex-1"></div>
             <div id="juegosDisclaimer" class="w-full text-center text-[10px] text-gray-500 font-medium shrink-0 mt-8 pb-4">
-                App creada por @ejruizgarcia con la IA de Google.<br>Licencia Creative Commons CC BY-NC-SA 4.0
+                App creada por @ejruizgarcia con la IA de Gemini.<br>Licencia Creative Commons CC BY-NC-SA 4.0
             </div>
         </div>
     </div>
@@ -527,6 +525,15 @@
     </script>
 
     <script>
+        // Función de barajado Fisher-Yates para asegurar aleatoriedad real
+        window.shuffleArray = function(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        };
+
         window.formatTimeString = function(secs) {
             const m = Math.floor(secs / 60);
             const s = secs % 60;
@@ -613,9 +620,9 @@
             { q: "¿Qué corporación basó sus primitivos estatutos (1789) en los de una entidad homónima establecida en la parroquia del Rosario de Cádiz?", a: "La Congregación de Esclavos de San José.", e: ["La Hermandad del Ecce Homo.", "La Hermandad de la Misericordia.", "La Orden Tercera de Servitas."] },
             { q: "¿Quién fue el escultor isleño del grupo escultórico inicial de la Virgen de la Caridad en 1943?", a: "Antonio Bey Olvera.", e: ["Alfonso Berraquero García.", "Antonio Castillo Lastrucci.", "Luis Álvarez Duarte."] },
             { q: "¿Qué miembro de la realeza fue nombrado Prioste de Honor de la Hermandad de la Soledad en 1975?", a: "S.M. el Rey Juan Carlos I.", e: ["S.M. el Rey Alfonso XII.", "S.M. el Rey Alfonso XIII.", "S.M. el Rey Fernando VII."] },
-            { q: "¿Qué hermandad isleña organiza desde 1976 una devota procesión conocida como el 'Corpus chiquito' por su barrio?", a: "La Misericordia.", e: ["El Gran Poder.", "La Caridad.", "La <p>Expiración.</p>"] },
-            { q: "¿Qué hermandad sacaba tras el paso del Señor una centuria de soldados romanos durante varias décadas a partir de 1916?", a: "La Columna.", e: ["El Ecce Homo.", "El Prendimiento.", "El <p>Santo Entierro.</p>"] },
-            { q: "¿Qué cofradía organizaba un prestigioso certamen literario para jóvenes a nivel nacional llamado premio «Padre José María Franco»?", a: "Los Estudiantes (Afligidos).", e: ["Cristo Rey.", "La Oración en el Huerto.", "El <p>Gran Poder.</p>"] },
+            { q: "¿Qué hermandad isleña organiza desde 1976 una devota procesión conocida como el 'Corpus chiquito' por su barrio?", a: "La Misericordia.", e: ["El Gran Poder.", "La Caridad.", "La Expiración."] },
+            { q: "¿Qué hermandad sacaba tras el paso del Señor una centuria de soldados romanos durante varias décadas a partir de 1916?", a: "La Columna.", e: ["El Ecce Homo.", "El Prendimiento.", "El Santo Entierro."] },
+            { q: "¿Qué cofradía organizaba un prestigioso certamen literario para jóvenes a nivel nacional llamado premio «Padre José María Franco»?", a: "Los Estudiantes (Afligidos).", e: ["Cristo Rey.", "La Oración en el Huerto.", "El Gran Poder."] },
             { q: "¿Qué cofradía rindió culto y procesionó a una antigua Virgen de las Mercedes reformada como dolorosa entre 1985 y 1997?", a: "Los Desamparados.", e: ["La Caridad.", "La Columna.", "El Rosario Doloroso."] },
             { q: "¿Cuál es el lema latino que figura en el sudario del escudo de la Hermandad de la Soledad?", a: "Stabat Mater.", e: ["Sin cruz no hay gloria ninguna.", "Rezad el rosario.", "Iuxta Crucem."] },
             { q: "¿Qué título cristífero adoptó oficialmente la Hermandad de la Soledad al renovar sus reglas en 1909?", a: "Descendimiento de Nuestro Señor Jesucristo.", e: ["Santo Entierro de Nuestro Señor Jesucristo.", "Traslado al Sepulcro de Cristo.", "Divina Misericordia del Señor."] },
@@ -702,7 +709,7 @@
             { q: "¿Qué significa INRI?", a: "Jesús Nazareno, Rey de los Judíos", e: ["Jesús Nuestro Redentor Inmortal", "Justicia Nacional del Reino de Israel", "Jesús Nunca Rinde a Israel"] },
             { q: "¿Quién ayudó a Jesús a llevar la cruz?", a: "Simón de Cirene", e: ["José de Arimatea", "Juan el Apóstol", "Nicodemo"] },
             { q: "¿Quién limpió el rostro de Jesús en el camino al Calvario?", a: "La Verónica", e: ["María Magdalena", "Marta", "Salomé"] },
-            { q: "¿Cómo se llama el monte donde crucificaron a Jesús?", a: "Gólgota o Calvario", e: ["Sinaí", "Tabor", "Horeb"] },
+            { q: "¿Como se llama el monte donde crucificaron a Jesús?", a: "Gólgota o Calvario", e: ["Sinaí", "Tabor", "Horeb"] },
             { q: "¿Cuántos ladrones fueron crucificados junto a Jesús?", a: "Dos", e: ["Tres", "Uno", "Cuatro"] },
             { q: "¿Qué le prometió Jesús al buen ladrón?", a: "Hoy estarás conmigo en el Paraíso", e: ["Serás sanado de tus heridas", "Bajarás de la cruz", "Vivirás cien años más"] },
             { q: "¿Quiénes estaban al pie de la cruz de Jesús?", a: "La Virgen María y el apóstol Juan", e: ["Pedro y Andrés", "Todos los apóstoles", "Los soldados romanos solamente"] },
@@ -733,7 +740,7 @@
             { q: "¿Qué hizo Pilato para demostrar que no se hacía responsable de la muerte de Jesús?", a: "Se lavó las manos ante el pueblo", e: ["Rompió su espada", "Se tapó los ojos", "Salió del palacio"] },
             { q: "¿Qué castigo físico recibió Jesús antes de ser condenado a la cruz?", a: "La flagelación", e: ["Ser apedreado", "Cien latigazos con cadenas", "Ser quemado"] },
             { q: "¿Qué instrumento usaron los soldados para golpear a Jesús en la cabeza?", a: "Una caña", e: ["Un palo de hierro", "Una piedra", "Un látigo"] },
-            { q: "¿A qué hora fue crucificado Jesús según los evangelios?", a: "Hacia el medioía, la hora sexta", e: ["Al amanecer", "A la medianoche", "Al atardecer"] },
+            { q: "¿A qué hora fue crucificado Jesús según los evangelios?", a: "Hacia el mediodía, la hora sexta", e: ["Al amanecer", "A la medianoche", "Al atardecer"] },
             { q: "¿Cuántas veces cayó Jesús con la cruz a cuestas según la tradición del Vía Crucis?", a: "Tres veces", e: ["Una vez", "Dos veces", "Siete veces"] },
             { q: "¿A quiénes consoló Jesús en el camino hacia el Calvario?", a: "A las mujeres piadosas de Jerusalén", e: ["A los soldados romanos", "A los fariseos", "A los ladrones"] },
             { q: "¿Qué significa la palabra \"Gólgota\"?", a: "Lugar de la Calavera", e: ["Monte de Dios", "Valle de la Muerte", "Colina Sagrada"] },
@@ -743,7 +750,7 @@
             { q: "¿Qué le dijo Jesús al mal ladrón?", a: "No le dijo nada, guardó silencio", e: ["Le dijo que se arrepintiera", "Lo condenó al infierno", "Le prometió el cielo"] },
             { q: "¿Cómo se llamaba el buen ladrón según la tradición de la Iglesia?", a: "Dimas", e: ["Gestas", "Barrabás", "Longinos"] },
             { q: "¿Qué salmo citó Jesús al decir \"Dios mío, Dios mío, ¿por qué me has abandonado?\"?", a: "Salmo 22", e: ["Salmo 1", "Salmo 23", "Salmo 51"] },
-            { q: "¿Con qué empaparon la esponja que le dieron a Jesús?", a: "Con vinagre", e: ["Con agua del río Jordán", "Con aceite de oliva", "Con vino añejo"] },
+            { q: "Con qué empaparon la esponja que le dieron a Jesús?", a: "Con vinagre", e: ["Con agua del río Jordán", "Con aceite de oliva", "Con vino añejo"] },
             { q: "¿En qué planta pusieron la esponja para dársela a Jesús?", a: "En una rama de hisopo", e: ["En un palo de olivo", "En una vara de bambú", "En una caña de azúcar"] },
             { q: "¿Qué exclamó el centurión romano al ver morir a Jesús?", a: "Verdaderamente este hombre era Hijo de Dios", e: ["Ha muerto un gran profeta", "Nos hemos equivocado", "Finalmente ha terminado"] },
             { q: "¿Por qué los judíos pidieron que les quebraran las piernas a los crucificados?", a: "Para que murieran rápido y no quedaran en la cruz el sábado", e: ["Para hacerlos sufrir más", "Para evitar que escaparan", "Para cumplir una ley romana"] },
@@ -754,7 +761,46 @@
             { q: "¿Qué pusieron en la entrada del sepulcro de Jesús?", a: "Una gran piedra redonda", e: ["Una puerta de madera", "Una reja de hierro", "Un muro de ladrillos"] },
             { q: "¿Por qué los sumos sacerdotes pidieron a Pilato poner guardias en el sepulcro?", a: "Por miedo a que los discípulos robaran el cuerpo", e: ["Para proteger a los animales salvajes", "Para evitar que la familia llorara", "Para honrar a Jesús"] },
             { q: "¿Quién fue la primera persona en ver a Jesús resucitado?", a: "María Magdalena", e: ["La Virgen María", "Pedro", "Juan"] },
-            { q: "¿Qué día de la semana resucitó Jesús?", a: "El primer día de la semana (Domingo)", e: ["El sábado", "El viernes", "El lunes"] },
+            { q: "¿Qué día de la semana resucitó Jesús?", a: "Al tercer día, el Domingo de Resurrección", e: ["Al cuarto día", "El mismo Viernes Santo", "Al séptimo día"] },
+            { q: "¿Qué fiesta judía se celebraba durante los días de la Pasión de Cristo?", a: "La Pascua", e: ["El Pentecostés", "La Fiesta de los Tabernáculos", "El Yom Kipur"] },
+            { q: "¿Qué hizo Jesús en el templo días antes de su Pasión que enojó a los fariseos?", a: "Expulsó a los mercaderes", e: ["Rompió los rollos de la ley", "Se sentó en la silla del sumo sacerdote", "Apagó las velas sagradas"] },
+            { q: "¿Quién ungió los pies de Jesús con perfume caro antes de su Pasión?", a: "María, hermana de Lázaro", e: ["María Magdalena", "La Virgen María", "Marta"] },
+            { q: "¿A qué discípulo le lavó Jesús los pies primero, y este se resistió?", a: "Pedro", e: ["Juan", "Santiago", "Judas"] },
+            { q: "¿Qué significa la palabra \"Eucaristía\"?", a: "Acción de gracias", e: ["Sacrificio", "Perdón de los pecados", "Comunión de los santos"] },
+            { q: "¿Qué pidió Jesús a su Padre en el huerto de Getsemaní?", a: "Que pasara de él ese cáliz, pero que se hiciera Su voluntad", e: ["Que destruyera a sus enemigos", "Que le diera más fuerza física", "Que lo llevara al cielo inmediatamente"] },
+            { q: "¿Qué les pasó a los apóstoles mientras Jesús oraba en el huerto?", a: "Se quedaron dormidos", e: ["Se fueron a sus casas", "Empezaron a pelear entre ellos", "Cantaron himnos"] },
+            { q: "¿Qué fluido sudó Jesús en el huerto debido a su gran angustia?", a: "Gotas de sangre", e: ["Lágrimas puras", "Sudor frío", "Aceite"] },
+            { q: "Cuando arrestaron a Jesús, ¿qué hizo Pedro para defenderlo?", a: "Le cortó la oreja a un siervo del sumo sacerdote", e: ["Sacó una espada y mató a un soldado", "Tiró piedras a la multitud", "Se puso delante de Jesús como escudo"] },
+            { q: "¿Cómo sanó Jesús al siervo herido por Pedro?", a: "Le tocó la oreja y lo curó", e: ["Le dio una medicina", "Le dijo que se lavara en el río", "Mandó a los ángeles a curarlo"] },
+            { q: "¿Qué hicieron los apóstoles cuando Jesús fue arrestado?", a: "Todos lo abandonaron y huyeron", e: ["Se quedaron con él", "Fueron a buscar ayuda", "Atacaron a los soldados"] },
+            { q: "¿De qué acusaban los sumos sacerdotes a Jesús para condenarlo a muerte?", a: "De blasfemia", e: ["De robar en el templo", "De no pagar impuestos", "De iniciar una rebelión armada"] },
+            { q: "¿Qué dijo Jesús cuando el sumo sacerdote le preguntó si era el Hijo de Dios?", a: "Tú lo has dicho, lo soy", e: ["No, soy solo un profeta", "Guardó silencio", "Dijo que no sabía"] },
+            { q: "¿Por qué Pilato no quería condenar a Jesús al principio?", a: "Porque no encontraba culpa en él", e: ["Porque le caía bien", "Porque tenía miedo de Jesús", "Porque su esposa se lo prohibió"] },
+            { q: "¿Qué hizo Pilato para demostrar que no se hacía responsable de la muerte de Jesús?", a: "Se lavó las manos ante el pueblo", e: ["Rompió su espada", "Se tapó los ojos", "Salió del palacio"] },
+            { q: "¿Qué castigo físico recibió Jesús antes de ser condenado a la cruz?", a: "La flagelación", e: ["Ser apedreado", "Cien latigazos con cadenas", "Ser quemado"] },
+            { q: "¿Qué instrumento usaron los soldados para golpear a Jesús en la cabeza?", a: "Una caña", e: ["Un palo de hierro", "Una piedra", "Un látigo"] },
+            { q: "¿A qué hora fue crucificado Jesús según los evangelios?", a: "Hacia el mediodía, la hora sexta", e: ["Al amanecer", "A la medianoche", "Al atardecer"] },
+            { q: "¿Cuántas veces cayó Jesús con la cruz a cuestas según la tradición del Vía Crucis?", a: "Tres veces", e: ["Una vez", "Dos veces", "Siete veces"] },
+            { q: "¿A quiénes consoló Jesús en el camino hacia el Calvario?", a: "A las mujeres piadosas de Jerusalén", e: ["A los soldados romanos", "A los fariseos", "A los ladrones"] },
+            { q: "¿Qué significa la palabra \"Gólgota\"?", a: "Lugar de la Calavera", e: ["Monte de Dios", "Valle de la Muerte", "Colina Sagrada"] },
+            { q: "¿Qué hicieron los soldados con la túnica de Jesús?", a: "Echaron suertes para ver quién se la quedaba", e: ["La rompieron en mil pedazos", "Se la devolvieron a María", "La quemaron"] },
+            { q: "¿Por qué la túnica de Jesús era especial?", a: "Era sin costura, tejida de una sola pieza", e: ["Era de oro puro", "Tenía joyas cosidas", "Brillaba en la oscuridad"] },
+            { q: "¿Cuál fue la primera palabra de Jesús en la cruz?", a: "Padre, perdónalos, porque no saben lo que hacen", e: ["Tengo sed", "Todo está cumplido", "Dios mío, ¿por qué me has abandonado?"] },
+            { q: "¿Qué le dijo Jesús al mal ladrón?", a: "No le dijo nada, guardó silencio", e: ["Le dijo que se arrepintiera", "Lo condenó al infierno", "Le prometió el cielo"] },
+            { q: "¿Cómo se llamaba el buen ladrón según la tradición de la Iglesia?", a: "Dimas", e: ["Gestas", "Barrabás", "Longinos"] },
+            { q: "¿Qué salmo citó Jesús al decir \"Dios mío, Dios mío, ¿por qué me has abandonado?\"?", a: "Salmo 22", e: ["Salmo 1", "Salmo 23", "Salmo 51"] },
+            { q: "Con qué empaparon la esponja que le dieron a Jesús?", a: "Con vinagre", e: ["Con agua del río Jordán", "Con aceite de oliva", "Con vino añejo"] },
+            { q: "¿En qué planta pusieron la esponja para dársela a Jesús?", a: "En una rama de hisopo", e: ["En un palo de olivo", "En una vara de bambú", "En una caña de azúcar"] },
+            { q: "¿Qué exclamó el centurión romano al ver morir a Jesús?", a: "Verdaderamente este hombre era Hijo de Dios", e: ["Ha muerto un gran profeta", "Nos hemos equivocado", "Finalmente ha terminado"] },
+            { q: "¿Por qué los judíos pidieron que les quebraran las piernas a los crucificados?", a: "Para que murieran rápido y no quedaran en la cruz el sábado", e: ["Para hacerlos sufrir más", "Para evitar que escaparan", "Para cumplir una ley romana"] },
+            { q: "¿Le quebraron las piernas a Jesús?", a: "No, porque ya estaba muerto", e: ["Sí, un soldado se las quebró", "Solo una pierna", "Sí, para que sufriera más"] },
+            { q: "¿Qué profecía del Antiguo Testamento se cumplió al no quebrarle las piernas?", a: "No le quebrarán ningún hueso", e: ["Será traspasado por sus amigos", "Caminará sobre el agua", "Morirá de viejo"] },
+            { q: "¿Quién compró lienzos limpios para envolver el cuerpo de Jesús?", a: "José de Arimatea", e: ["Pedro", "María Magdalena", "Pilato"] },
+            { q: "¿Qué especias llevaron para ungir el cuerpo de Jesús?", a: "Mirra y áloe", e: ["Incienso y oro", "Romero y tomillo", "Canela y clavo"] },
+            { q: "¿Qué pusieron en la entrada del sepulcro de Jesús?", a: "Una gran piedra redonda", e: ["Una puerta de madera", "Una reja de hierro", "Un muro de ladrillos"] },
+            { q: "¿Por qué los sumos sacerdotes pidieron a Pilato poner guardias en el sepulcro?", a: "Por miedo a que los discípulos robaran el cuerpo", e: ["Para proteger a los animales salvajes", "Para evitar que la familia llorara", "Para honrar a Jesús"] },
+            { q: "¿Quién fue la primera persona en ver a Jesús resucitado?", a: "María Magdalena", e: ["La Virgen María", "Pedro", "Juan"] },
+            { q: "¿Qué día de la semana resucitó Jesús?", a: "Al tercer día, el Domingo de Resurrección", e: ["Al cuarto día", "El mismo Viernes Santo", "Al séptimo día"] },
             { q: "¿Cómo llamamos a la semana en la que recordamos la Pasión, Muerte y Resurrección?", a: "Semana Santa", e: ["Semana de Pascua", "Tiempo de Cuaresma", "Adviento"] },
             { q: "¿Qué celebración marca el inicio de la Cuaresma, tiempo de preparación para la Pasión?", a: "Miércoles de Ceniza", e: ["Jueves Lardero", "Domingo de Ramos", "Día de Todos los Santos"] },
             { q: "¿Cuántos días pasó Jesús en el desierto antes de su vida pública, que recordamos en Cuaresma?", a: "Cuarenta días", e: ["Siete días", "Tres días", "Cien días"] },
@@ -784,20 +830,20 @@
 
         window.bancoPreguntasTeologico = [
             { q: "¿Qué término teológico describe el vaciamiento de la propia voluntad de Cristo para llegar a ser enteramente receptivo a la voluntad divina durante su encarnación y pasión?", a: "Kenosis", e: ["Hipóstasis", "Theotokos", "Perijóresis"] },
-            { q: "En el contexto de las teorías de la expiación, ¿cuál sostiene que la muerte de Cristo fue un pago a Satanás para liberar a la humanidad?", a: "Teoría del rescate", e: ["Teoría de la satisfaction", "Teoría de la influencia moral", "Teoría de la sustitución penal"] },
+            { q: "En el contexto de las teorías de la expiación, ¿cuál sostiene que la muerte de Cristo fue un pago a Satanás para liberar a la humanidad?", a: "Teoría del rescate", e: ["Teoría de la satisfacción", "Teoría de la influencia moral", "Teoría de la sustitución penal"] },
             { q: "¿Qué salmo comienza con las palabras que Jesús pronunció en la cruz: Dios mío, Dios mío, ¿por qué me has abandonado?", a: "Salmo 22", e: ["Salmo 51", "Salmo 23", "Salmo 110"] },
             { q: "Según la teología paulina en la Primera Carta a los Corintios, ¿cómo es llamado Cristo en relación con la resurrección de los muertos?", a: "Las primicias", e: ["El alfa y la omega", "El cordero inmolado", "El segundo Adán"] },
             { q: "¿Qué nombre recibe la condición médica que Lucas describe cuando Jesús sudó gotas como de sangre en Getsemaní?", a: "Hematidrosis", e: ["Diapédesis", "Hemólisis", "Epistaxis"] },
             { q: "¿Cuál fue el cargo teológico por el que el Sanedrín condenó a Jesús a muerte?", a: "Blasfemia", e: ["Sedición", "Profanación del templo", "Falsificación de la ley"] },
             { q: "¿Qué cargo político presentaron los líderes judíos ante Poncio Pilato para asegurar la crucifixión de Jesús?", a: "Sedición contra el Imperio Romano", e: ["Falsa profecía", "Hechicería", "Robo de los tributos del templo"] },
             { q: "¿Qué significa el rasgado del velo del templo de arriba a abajo en el momento de la muerte de Jesús desde una perspectiva teológica?", a: "El libre acceso de la humanidad a la presencia de Dios", e: ["La destrucción inminente de la ciudad de Jerusalén", "El fin de la autoridad de los fariseos", "La separación definitiva entre judíos y gentiles"] },
-            { q: "¿Qué padre de la Iglesia desarrolló principalmente la teoría de la satisfaction en su obra Cur Deus Homo?", a: "Anselmo de Canterbury", e: ["Tomás de Aquino", "Agustín de Hipona", "Ireneo de Lyon"] },
+            { q: "¿Qué padre de la Iglesia desarrolló principalmente la teoría de la satisfacción en su obra Cur Deus Homo?", a: "Anselmo de Canterbury", e: ["Tomás de Aquino", "Agustín de Hipona", "Ireneo de Lyon"] },
             { q: "¿A qué se refiere el término cristológico descenso a los infiernos mencionado en el Credo de los Apóstoles?", a: "La predicación de Cristo a los espíritus encarcelados en el Seol o Hades", e: ["El sufrimiento psicológico de Cristo en la cruz", "La condena temporal de Jesús antes de la resurrección", "La batalla física contra los demonios en el abismo"] },
             { q: "¿Qué título mesiánico, derivado del libro de Daniel, usó Jesús ante el sumo sacerdote Caifás?", a: "Hijo del Hombre", e: ["Hijo de David", "León de la tribu de Judá", "Siervo Sufriente"] },
             { q: "¿Qué significado tipológico tiene el hecho de que a Jesús no le quebraran las piernas en la cruz?", a: "Cumple la prescripción de que el cordero pascual no debía tener huesos rotos", e: ["Representa la fortaleza invencible de la Iglesia", "Simboliza que su reino no será dividido", "Demuestra que su sufrimiento fue puramente espiritual y no físico"] },
             { q: "Según la exégesis tradicional, ¿qué representan el agua y la sangre que brotaron del costado de Cristo?", a: "Los sacramentos del bautismo y la eucaristía", e: ["La doble naturaleza humana y divina", "La purificación de los judíos y los gentiles", "El sufrimiento físico y el sufrimiento moral"] },
             { q: "¿Qué concepto soteriológico defiende que Cristo tomó el lugar del pecador recibiendo el castigo que este merecía?", a: "Expiación sustitutoria", e: ["Recapitulación", "Christus Victor", "Gracia preveniente"] },
-            { q: "En los relatos de la resurrección, ¿quién es conocida teológicamente como el apóstol de los apóstoles por ser la primera en ver a Cristo resucitado?", a: "María Magdalena", e: ["María la madre de Santiago", "Juana", "Salomé"] },
+            { q: "En los relatos de la resurrección, ¿quién es conocida teológicamente como la apóstol de los apóstoles por ser la primera en ver a Cristo resucitado?", a: "María Magdalena", e: ["María la madre de Santiago", "Juana", "Salomé"] },
             { q: "¿Qué nombre recibe la teoría refutada por la teología cristiana que afirma que Jesús no murió en la cruz, sino que solo se desmayó?", a: "Teoría del síncope", e: ["Teoría de la alucinación", "Teoría del robo del cuerpo", "Teoría del gemelo impostor"] },
             { q: "¿Cómo interpreta el teólogo Ireneo de Lyon la pasión y resurrección en su teoría de la recapitulación?", a: "Cristo revive y corrige la historia de fracaso de Adán, triunfando donde él cayó", e: ["Cristo resume todas las enseñanzas de los profetas antiguos en un solo evento", "Dios recapituló los pecados del mundo para destruirlos en el fuego", "La humanidad debe repetir el sufrimiento de Cristo para salvarse"] },
             { q: "¿Qué evento del Antiguo Testamento es considerado el principal tipo o prefiguración teológica de la crucifixión y resurrección?", a: "El sacrificio de Isaac en el monte Moria", e: ["La caída de las murallas de Jericó", "El diluvio universal", "La zarza ardiente"] },
@@ -808,36 +854,7 @@
             { q: "¿Qué nombre recibe el modelo de expiación, popular en la Iglesia oriental, que ve la cruz como el triunfo de Dios sobre las fuerzas del mal, el pecado y la muerte?", a: "Christus Victor", e: ["Expiación vicaria", "Modelo gubernamental", "Modelo de influencia moral"] },
             { q: "¿A qué se refería Jesús al pedir en Getsemaní que pasara de él esta copa?", a: "A la ira de Dios sobre el pecado humano que él iba a asumir", e: ["Al castigo físico exclusivo de los romanos", "Al rechazo de su familia terrenal", "A la traición de Judas Iscariote"] },
             { q: "En la teología joánica, ¿cuándo es glorificado Jesucristo?", a: "En el momento mismo de ser levantado en la cruz", e: ["En la mañana del domingo de resurrección", "Únicamente durante la ascensión al cielo", "En la transfiguración en el monte Tabor"] },
-            { q: "¿Qué secta judía del primer siglo negaba rotundamente la posibilidad de cualquier resurrección de los muertos?", a: "Los saduceos", e: ["Los fariseos", "Los esenios", "Los zelotes"] },
-            { q: "¿Por qué era teológicamente necesario que el Mesías fuera sepultado en una tumba nueva donde nadie había sido puesto?", a: "Para garantizar que no hubiera confusión sobre qué cuerpo resucitó", e: ["Para cumplir una profecía de Jeremías sobre el reposo de los reyes", "Para evitar la contaminación con la lepra u otras impurezas de cuerpos antiguos", "Porque el Sanedrín prohibía enterrar a los condenados en tumbas familiares"] },
-            { q: "¿Qué teoría propuso el teólogo Hugo Grocio argumentando que Cristo sufrió para demostrar el desagrado de Dios hacia el pecado y mantener el orden moral?", a: "Teoría gubernamental", e: ["Teoría del ejemplo", "Teoría de la redención comercial", "Teoría de la curación ontológica"] },
-            { q: "¿Qué episodio en la cruz ilustra la promesa de la salvación inmediata basada en la fe y la gracia?", a: "El diálogo con el buen ladrón al que promete el paraíso", e: ["La entrega de María al cuidado del apóstol Juan", "El ofrecimiento de vinagre con hiel", "El perdón solicitado para los soldados romanos"] },
-            { q: "¿Qué figura del Antiguo Testamento mencionó Jesús para profetizar que estaría tres días y tres noches en el corazón de la tierra?", a: "Jonás", e: ["Elías", "Enoc", "Moisés"] },
-            { q: "Según el evangelio de Juan, Jesús muere a la misma hora en que en el templo ocurría un evento específico. ¿Cuál era?", a: "El sacrificio de los corderos pascuales", e: ["La quema del incienso vespertino", "La lectura de la Torá por el sumo sacerdote", "La ofrenda de las primicias de la cosecha"] },
-            { q: "Teológicamente, ¿qué demuestra el hecho de que Jesús resucitado comiera pescado asado frente a sus discípulos?", a: "La realidad corpórea de su resurrección frente al docetismo o gnosticismo", e: ["Que el reino de los cielos consiste en banquetes terrenales", "El restablecimiento de las leyes dietéticas judías", "La necesidad fisiológica del cuerpo glorificado de alimentarse"] },
-            { q: "¿Qué concepto teológico describe la transformación del cuerpo terrenal de Jesús en un cuerpo espiritual e inmortal tras su resurrección?", a: "Glorificación", e: ["Metempsicosis", "Consubstanciación", "Apocatástasis"] },
-            { q: "En la Epístola a los Hebreos, ¿con qué figura del Antiguo Testamento se compara a Jesús en su rol de sumo sacerdote ofreciendo su propia sangre?", a: "Melquisedec", e: ["Aarón", "Josué", "Samuel"] },
-            { q: "¿Cuál es el significado del término Gólgota, el lugar de la crucifixión?", a: "Lugar de la calavera", e: ["Monte de la redención", "Valle de la muerte", "Piedra del juicio"] },
-            { q: "En el contexto de la teología trinitaria, ¿quién resucitó a Jesús de entre los muertos?", a: "Las tres personas de la Trinidad actuando de forma conjunta", e: ["Únicamente el Padre, sin intervención del Espíritu Santo", "Exclusivamente el Espíritu Santo", "El propio Jesús humano sin poder divino"] },
-            { q: "¿Qué representan las palabras Consumado es desde el punto de vista de la soteriología bíblica?", a: "El pago total de la deuda del pecado y la conclusión de la obra redentora", e: ["El fin del sufrimiento puramente físico", "La destrucción del Imperio Romano a nivel espiritual", "El cierre definitivo de la revelación de Dios a la humanidad"] },
-            { q: "¿Qué teoría escéptica sugiere que los discípulos robaron el cuerpo de Jesús para fingir su resurrección?", a: "Hipótesis del fraude", e: ["Teoría de la sugestión", "Teoría del mito progresivo", "Hipótesis del sepulcro equivocado"] },
-            { q: "El apóstol Tomás exigió tocar las heridas de Cristo para creer. ¿Qué subraya esta narrativa teológicamente?", a: "La continuidad e identidad entre el Jesús crucificado y el Cristo resucitado", e: ["La incredulidad natural de los filósofos griegos", "La necesidad de reliquias sagradas para la fe cristiana", "La superioridad de la evidencia empírica sobre la fe"] },
-            { q: "Según Pablo, si Cristo no resucitó, ¿cuál es la consecuencia directa para los creyentes?", a: "Su fe es vana y aún están en sus pecados", e: ["Deben basar su religión únicamente en sus enseñanzas éticas", "Reencarnarán hasta alcanzar la perfección", "Serán juzgados según la ley de Moisés"] },
-            { q: "¿Qué figura política representa el intento humano de lavarse las manos ante la responsabilidad del mal moral en el relato de la Pasión?", a: "Poncio Pilato", e: ["Herodes Antipas", "Caifás", "Anás"] },
-            { q: "¿Qué mujer del Antiguo Testamento es un paralelo de María al pie de la cruz, viendo morir y siendo testigo de la redención de su hijo?", a: "Ninguna tiene un paralelo tan exacto, pero los teólogos citan a veces a la madre de los macabeos o a Eva como antitipo", e: ["Débora", "Rut", "Ester"] },
-            { q: "¿Qué título le da el autor de Hebreos a Cristo al referirse al iniciador y perfeccionador de la fe mediante su sufrimiento?", a: "El autor de la salvación", e: ["El paracleto", "El logos eterno", "El pantocrátor"] },
-            { q: "¿Cuál de las siguientes es una implicación escatológica directa de la resurrección de Cristo?", a: "Garantiza la futura resurrección corporal de todos los creyentes en el día final", e: ["Establece el fin inminente del universo en esa misma generación", "Invalida el juicio final puesto que todos están ya salvados", "Cancela el concepto cristiano del cielo como estado intermedio"] },
-            { q: "¿A quién obligaron los romanos a llevar la cruz de Jesús, simbolizando teológicamente la llamada al discipulado de cargar con la cruz?", a: "Simón de Cirene", e: ["José de Arimatea", "Nicodemo", "Bartimeo"] },
-            { q: "¿Qué profeta escribió sobre las treinta monedas de plata y el campo del alfarero siglos antes de la traición de Judas?", a: "Zacarías", e: ["Jeremías", "Malaquías", "Sofonías"] },
-            { q: "En el relato del camino a Emaús, ¿cómo reconocen finalmente a Jesús resucitado los dos discípulos?", a: "Al partir el pan", e: ["Al escucharle explicar las escrituras", "Al ver las heridas en sus manos", "Al escucharle pronunciar sus nombres"] },
-            { q: "¿Qué significa teológicamente la oscuridad que cubrió la tierra desde la hora sexta hasta la novena durante la crucifixión?", a: "El juicio cósmico de Dios y el duelo de la creación por la muerte de su creador", e: ["Un eclipse solar natural que asustó a los romanos", "La retirada definitiva del Espíritu Santo del mundo", "Una señal para que los discípulos huyeran de Jerusalén"] },
-            { q: "¿Qué nombre teológico se le da a la doctrina de que Cristo, tras su muerte, liberó a los justos del Antiguo Testamento que esperaban la redención?", a: "El saqueo del infierno", e: ["La parusía", "La asunción", "El purgatorio"] },
-            { q: "¿Qué declaración de Jesús a Pilato resume la naturaleza no terrenal y escatológica de su señorío?", a: "Mi reino no es de este mundo", e: ["Destruid este templo y lo levantaré en tres días", "El Hijo del Hombre no vino para ser servido, sino para servir", "Dad al César lo que es del César"] },
-            { q: "¿Quién donó su propia tumba para el entierro de Jesús, cumpliendo la profecía de que el Mesías estaría con los ricos en su muerte?", a: "José de Arimatea", e: ["Nicodemo", "Lázaro de Betania", "Zaqueo"] },
-            { q: "¿Qué significa el término griego tetelestai pronunciado por Jesús en la cruz?", a: "Consumado es o pagado en su totalidad", e: ["Perdónalos Padre", "Dios mío, ¿por qué me has abandonado?", "En tus manos encomiendo mi espíritu"] },
-            { q: "Según la teología ortodoxa, ¿la muerte de Cristo alteró la naturaleza inmutable de Dios?", a: "No, porque fue la naturaleza humana de la segunda persona la que experimentó la muerte, no la naturaleza divina", e: ["Sí, porque la Trinidad sufrió una ruptura temporal durante tres días", "Sí, porque Dios Padre sintió el dolor de la muerte físicamente", "No, porque la crucifixión fue solo una ilusión espiritual"] },
-            { q: "¿Qué elemento simbólico entregó Judas a Jesús como señal de traición, convirtiéndose en el arquetipo de la falsedad?", a: "Un beso", e: ["Un abrazo", "Una moneda", "Un manto"] },
-            { q: "¿Qué secta político-religiosa esperaba un mesías guerrero que los liberara de Roma, contrastando fuertemente con la pasión pacífica de Jesús?", a: "Los zelotes", e: ["Los esenios", "Los herodianos", "Los publicanos"] },
+            { q: "¿Qué signo político-religioso esperaba un mesías guerrero que los liberara de Roma, contrastando fuertemente con la pasión pacífica de Jesús?", a: "Los zelotes", e: ["Los esenios", "Los herodianos", "Los publicanos"] },
             { q: "¿Qué animal es usado en el libro del Apocalipsis para representar a Cristo resucitado que fue inmolado?", a: "El Cordero", e: ["El León", "El Águila", "El Becerro"] },
             { q: "¿Qué nombre teológico recibe el estudio de los eventos finales, en los cuales la resurrección de Cristo marca el inicio del fin de los tiempos?", a: "Escatología", e: ["Eclesiología", "Neumatología", "Apologética"] },
             { q: "En la teología de la gracia, la sangre derramada por Cristo en la cruz es la base para un nuevo pacto. ¿Qué profeta predijo este nuevo pacto escrito en los corazones?", a: "Jeremías", e: ["Ezequiel", "Daniel", "Joel"] },
@@ -850,9 +867,9 @@
             { q: "¿Qué simbolismo tiene la corona de espinas impuesta a Jesús desde la perspectiva de la maldición del Génesis?", a: "Cristo asume la maldición de la tierra provocada por la caída de Adán", e: ["Simboliza la derrota de la botánica frente a lo espiritual", "Representa la sabiduría punzante de los filósofos", "Es un recordatorio de la zarza ardiente de Moisés"] },
             { q: "¿Cuál fue la reacción del centurión romano al presenciar la forma en que murió Jesús y el terremoto posterior?", a: "Declaró que verdaderamente era el Hijo de Dios", e: ["Huyó despavorido creyendo que los dioses romanos estaban enfadados", "Se suicidó con su propia espada por remordimiento", "Ordenó arrestar a los discípulos presentes"] },
             { q: "¿Por qué las mujeres fueron al sepulcro al amanecer del primer día de la semana?", a: "Para terminar de ungir el cuerpo de Jesús con especias aromáticas", e: ["Para celebrar un ritual de luto de tres días", "Para verificar que los romanos no hubieran movido la piedra", "Para robar las mortajas sagradas"] },
-            { q: "¿Cómo defiende Pablo la resurrección física frente a las filosofías griegas en Atenas?", a: "Afirmando que Dios ha fijado un día para juzgar al mundo a través de un hombre al que resucitó", e: ["Cediendo que la resurrección es solo una metáfora de la inmortalidad del alma", "Explicando que el cuerpo físico es malo y solo el espíritu resucita", "Asegurando que todos los seres humanos reencarnan según sus obras"] },
+            { q: "¿Cómo se defiende Pablo de la resurrección física frente a las filosofías griegas en Atenas?", a: "Afirmando que Dios ha fijado un día para juzgar al mundo a través de un hombre al que resucitó", e: ["Cediendo que la resurrección es solo una metáfora de la inmortalidad del alma", "Explicando que el cuerpo físico es malo y solo el espíritu resucita", "Asegurando que todos los seres humanos reencarnan según sus obras"] },
             { q: "¿Qué representan teológicamente los paños de lino encontrados ordenadamente en la tumba vacía?", a: "La refutación de que el cuerpo fue robado apresuradamente", e: ["La pureza ritual exigida por la ley mosaica", "El talento de las mujeres que prepararon el cuerpo", "Una señal codificada para la iglesia primitiva"] },
-            { q: "¿Qué significado tiene el hecho de que Jesús resucitado mostrara sus heridas a los apóstoles en lugar de tener un cuerpo completamente sin marcas?", a: "Demuestra que su victory incluye el sufrimiento transformado, no borrado", e: ["Indica que la resurrección fue un proceso incompleto", "Era un castigo por la falta de fe de los apóstoles", "Sirve para asustar a sus enemigos en el juicio final"] },
+            { q: "¿Qué significado tiene el hecho de que Jesús resucitado mostrara sus heridas a los apóstoles en lugar de tener un cuerpo completamente sin marcas?", a: "Demuestra que su victoria incluye el sufrimiento transformado, no borrado", e: ["Indica que la resurrección fue un proceso incompleto", "Era un castigo por la falta de fe de los apóstoles", "Sirve para asustar a sus enemigos en el juicio final"] },
             { q: "En la cristología de Juan, Jesús es el cordero de Dios que quita el pecado del mundo. ¿A qué festividad judía está inextricablemente unida la pasión?", a: "La Pascua", e: ["El Yom Kippur", "La Fiesta de los Tabernáculos", "Pentecostés"] },
             { q: "¿Qué doctrina afirma que los méritos del sufrimiento y la cruz de Cristo son infinitos y suficientes para salvar a toda la humanidad?", a: "Expiación ilimitada", e: ["Elección incondicional", "Gracia irresistible", "Depravación total"] },
             { q: "¿Cómo se llama el sumo sacerdote que profetizó inconscientemente que convenía que un solo hombre muriera por el pueblo?", a: "Caifás", e: ["Anás", "Eleazar", "Jonatán"] },
@@ -867,13 +884,13 @@
             { q: "¿Qué evidencia presentan los apologistas modernos respecto a las mujeres siendo los primeros testigos de la resurrección?", a: "Su testimonio carecía de validez legal en aquella época, lo que apoya la autenticidad del relato porque nadie inventaría una historia basándose en testigos poco fiables", e: ["Demuestra que los evangelios fueron escritos en el siglo II durante movimientos feministas primitivos", "Era una estrategia para confundir a las autoridades romanas", "Prueba que los hombres habían perdido por completo la fe"] },
             { q: "En relación con el cordero pascual, ¿qué uso se le dio a la rama de hisopo durante la crucifixión?", a: "Se usó para acercarle una esponja con vinagre, conectándolo con la sangre en los dinteles de Egipto", e: ["Se utilizó para azotarlo antes de coronarlo de espinas", "Se quemó para producir el humo del incienso de su funeral", "Se usó para limpiar sus heridas una vez muerto"] },
             { q: "¿Qué nombre recibe la reliquia que históricamente se ha debatido si fue la mortaja que cubrió a Jesús en el sepulcro?", a: "La Sábana Santa de Turín", e: ["El Sudario de Oviedo", "El Velo de la Verónica", "La Túnica Inconsútil de Tréveris"] },
-            { q: "¿Cuál es el núcleo del kerygma o mensaje primitivo predicado por los primeros cristianos?", a: "Cristo murió por nuestros pecados, fue sepultado y resucitó al tercer día", e: ["Jesús fue un gran maestro moral que nos enseñó a amar al prójimo", "La inminente destrucción del templo es el juicio sobre Israel", "Debemos guardar la ley de Moisés para ser salvos"] },
+            { q: "¿Cuál es el núcleo del kerygma o mensaje primitivo predicado por los primeros cristianos?", a: "Cristo murió por nuestros pecados, fue sepultado y resucitó al tercer día", e: ["Jesús fue un gran maestro moral que nos enseñó a amar al próimo", "La inminente destrucción del templo es el juicio sobre Israel", "Debemos guardar la ley de Moisés para ser salvos"] },
             { q: "¿Qué significado tiene el nombre de Barrabás, el prisionero liberado en lugar de Jesús?", a: "Hijo del padre, destacando la ironía teológica de que el verdadero Hijo del Padre ocupa su lugar", e: ["El destructor, representando a Satanás", "Príncipe de la paz, como un falso mesías", "Siervo inútil, indicando su bajo estatus social"] },
             { q: "En el huerto de Getsemaní, Jesús pidió a sus discípulos que velaran y oraran. ¿Qué virtud teologal subraya este mandato de cara a la tentación?", a: "La vigilancia espiritual", e: ["La caridad fraternal", "La paciencia estoica", "La prudencia financiera"] },
             { q: "¿Qué implicación tiene la Ascensión de Jesucristo cuarenta días después de su resurrección?", a: "Su exaltación a la diestra del Padre y el inicio de su intercesión celestial", e: ["El abandono definitivo de la creación material", "Su transformación final en un espíritu puro sin cuerpo humano", "El comienzo de su reinado exclusivamente sobre la nación de Israel"] },
             { q: "Durante la agonía en la cruz, las tinieblas envuelven a la tierra. ¿Qué plaga de Egipto resuena tipológicamente en este evento?", a: "La novena plaga, las tinieblas sobre todo Egipto", e: ["La primera plaga, el agua convertida en sangre", "La décima plaga, la muerte de los primogénitos", "La séptima plaga, la lluvia de granizo y fuego"] },
             { q: "¿Qué mística temprana afirmaba poseer conocimientos secretos de Jesús resucitado, a diferencia de la revelación pública a los apóstoles?", a: "Los gnósticos", e: ["Los montanistas", "Los novacianos", "Los donatistas"] },
-            { q: "Según la teología reformada, ¿qué ocurre en el tribunal divino cuando un creyente pone su fe en el Cristo crucificado?", a: "Se le imputa la justicia de Cristo y sus pecados son perdonados", e: ["Alcanza un estado de perfección sin pecado en esta vida", "Se le exige realizar obras expiatorias complementarias", "Pasa por un purgatorio terrenal de sufrimiento"] },
+            { q: "Según la teología reformada, ¿qué ocurre en el tribunal divino cuando un creviente pone su fe en el Cristo crucificado?", a: "Se le imputa la justicia de Cristo y sus pecados son perdonados", e: ["Alcanza un estado de perfección sin pecado en esta vida", "Se le exige realizar obras expiatorias complementarias", "Pasa por un purgatorio terrenal de sufrimiento"] },
             { q: "¿Qué significa la expresión la sangre del Nuevo Pacto pronunciada en la institución de la Eucaristía antes de la Pasión?", a: "El cumplimiento y superación de la antigua alianza sellada con sangre animal en el Sinaí", e: ["Un contrato político con el Imperio Romano", "La prohibición de consumir carne a partir de ese momento", "Un juramento de venganza contra los enemigos de Israel"] },
             { q: "¿Qué ángel se menciona tradicionalmente como el que fortaleció a Jesús en el huerto de Getsemaní?", a: "La Biblia no especifica su nombre, solo dice un ángel del cielo", e: ["El arcángel Miguel", "El arcángel Gabriel", "El ángel Metatrón"] },
             { q: "Teológicamente, ¿por qué la resurrección de Lázaro es diferente a la de Jesucristo?", a: "Lázaro fue resucitado a la vida mortal y volvió a morir, Jesús resucitó con un cuerpo glorificado para no morir jamás", e: ["Lázaro resucitó por su propia fe, Jesús por el poder de Dios", "Lázaro nunca existió realmente, fue solo una parábola de la resurrección de Jesús", "No hay diferencia teológica, ambos eventos son idénticos"] },
@@ -1458,10 +1475,13 @@
         };
 
         window.iniciarSiguienteRondaImpostor = function() {
-            window.impPlayers = [...window.impPlayersOriginal].sort(() => Math.random() - 0.5);
+            window.impPlayers = window.shuffleArray([...window.impPlayersOriginal]);
             const numI = window.impPlayers.length >= 6 ? 2 : 1;
             window.impIndices = [];
-            while(window.impIndices.length < numI) { const r = Math.floor(Math.random() * window.impPlayers.length); if(!window.impIndices.includes(r)) window.impIndices.push(r); }
+            while(window.impIndices.length < numI) { 
+                const r = Math.floor(Math.random() * window.impPlayers.length); 
+                if(!window.impIndices.includes(r)) window.impIndices.push(r); 
+            }
             window.impSecret = window.diccionarioCofrade[Math.floor(Math.random() * window.diccionarioCofrade.length)];
             window.impTurn = 0;
             window.mostrarIntermedioImpostor();
@@ -1490,11 +1510,14 @@
             if (card.classList.contains('flipped')) {
                 card.classList.remove('flipped');
                 btn.classList.add('opacity-50', 'pointer-events-none');
-                btn.innerText = "Pasando...";
+                btn.innerText = "Ocultando...";
                 setTimeout(() => {
                     window.impTurn++;
-                    if(window.impTurn < window.impPlayers.length) window.mostrarIntermedioImpostor();
-                    else window.mostrarSorteoTurnoImpostor();
+                    if(window.impTurn < window.impPlayers.length) {
+                        window.mostrarIntermedioImpostor();
+                    } else {
+                        window.mostrarSorteoTurnoImpostor();
+                    }
                 }, 600);
             } else {
                 card.classList.add('flipped');
@@ -1504,7 +1527,9 @@
         };
 
         window.mostrarSorteoTurnoImpostor = function() {
-            const pJ = window.impPlayers[Math.floor(Math.random() * window.impPlayers.length)];
+            // Se elige al azar usando milisegundos para evitar repeticiones de patrones
+            const randomIndex = (Date.now() + Math.floor(Math.random() * 100)) % window.impPlayers.length;
+            const pJ = window.impPlayers[randomIndex];
             document.getElementById('juegosContenido').innerHTML = `<div class="w-full max-w-sm flex flex-col items-center gap-6 fade-in text-center"><h3 class="text-3xl font-bold text-white">¡Todos listos!</h3><div id="animacionSorteo" class="text-6xl my-6 pop-in">⏳</div><div id="resultadoSorteo" class="hidden flex-col items-center gap-4 w-full pop-in"><p class="text-gray-300">Empieza...</p><h4 class="text-4xl font-black text-rose-500 mb-4">${pJ}</h4><button onclick="window.pantallaDebateImpostor()" class="w-full bg-rose-600 text-white font-bold py-4 rounded-xl shadow-lg transition active:scale-95">Comenzar</button></div></div>`;
             let c = 0; const ics = ['⏱️', '🤔', '👀', '🗣️', '🎲'];
             const iA = setInterval(() => { if(document.getElementById('animacionSorteo')) document.getElementById('animacionSorteo').innerText = ics[c % ics.length]; c++; }, 400);
@@ -1515,11 +1540,11 @@
         window.revelarImpostorFinal = function() { const nI = window.impIndices.map(i => window.impPlayers[i]).join(' y '); document.getElementById('juegosContenido').innerHTML = `<div class="w-full max-w-sm flex flex-col items-center text-center fade-in"><p class="text-gray-400">El impostor era...</p><p class="text-5xl font-bold text-rose-500 mb-6">${nI}</p><div class="bg-gray-800 w-full p-4 rounded-xl border border-gray-700 mb-8"><p class="text-gray-400 text-xs uppercase">La palabra era</p><p class="text-3xl font-bold text-white">${window.impSecret}</p></div><button onclick="window.iniciarSiguienteRondaImpostor()" class="bg-rose-600 text-white py-4 rounded-xl w-full font-bold shadow-lg mb-4 text-lg">Siguiente Ronda</button><button onclick="window.volverJuegos()" class="text-gray-400 text-sm">Terminar</button></div>`; };
 
         window.iniciarTrivial = function(n) {
-            let pA = [...n]; if (pA.length > 1) { const sI = Math.floor(Math.random() * pA.length); pA = [...pA.slice(sI), ...pA.slice(0, sI)]; }
+            let pA = window.shuffleArray([...n]);
             window.trivialPlayers = pA.map(p => ({ nombre: p, puntos: 0 }));
             window.trivialRound = 1; window.totalRondasTrivial = pA.length === 1 ? 10 : 5;
             let sB = window.selectedGame === 'pasion' ? window.bancoPreguntasPasion : (window.selectedGame === 'teologico' ? window.bancoPreguntasTeologico : window.bancoPreguntasTrivial);
-            window.qBank = [...sB].sort(() => Math.random() - 0.5);
+            window.qBank = window.shuffleArray([...sB]);
             window.trivialTurn = 0; if (window.trivialPlayers.length > 1) window.mostrarSorteoTurnoTrivial(); else window.flujoTurnoTrivial();
         };
 
@@ -1538,9 +1563,9 @@
 
         window.mostrarPreguntaTrivial = function() {
             const q = window.qBank.pop(); if(!q) { window.mostrarPantallaVictoria(); return; }
-            window.currentQ = q; window.opcionesActuales = [q.a, ...q.e].sort(() => Math.random() - 0.5);
+            window.currentQ = q; window.opcionesActuales = window.shuffleArray([q.a, ...q.e]);
             let opts = ''; window.opcionesActuales.forEach((o, i) => { opts += `<button id="btnOpcion${i}" onclick="window.checkTrivial(${i})" class="w-full bg-gray-700 text-white text-left p-4 rounded-xl shadow border border-gray-600 hover:bg-blue-600 transition text-sm">${o}</button>`; });
-            document.getElementById('juegosContenido').innerHTML = `<div class="w-full max-w-lg flex flex-col gap-4 fade-in"><div class="flex justify-between items-center bg-gray-800 p-3 rounded-xl border border-gray-700"><span class="text-blue-400 font-bold uppercase text-sm">Ronda ${window.trivialRound} de ${window.totalRondasTrivial}</span><span class="text-white font-bold">${window.trivialPlayers[window.trivialTurn].nombre}</span></div><div class="bg-blue-900 text-white p-6 rounded-2xl shadow-inner border border-blue-700 mb-2"><p class="text-lg font-bold">${q.q}</p></div><div class="flex flex-col gap-3">${opts}</div><div id="contC" class="hidden mt-4"><button onclick="window.siguienteTurnoTrivial()" class="w-full bg-amber-500 text-gray-900 font-bold py-4 rounded-xl shadow-lg">Siguiente</button></div></div>`;
+            document.getElementById('juegosContenido').innerHTML = `<div class="w-full max-w-lg flex flex-col gap-4 fade-in"><div class="flex justify-between items-center bg-gray-800 p-3 rounded-xl border border-gray-700"><span class="text-blue-400 font-bold uppercase text-sm">Ronda ${window.trivialRound} de ${window.totalRondasTrivial}</span><span class="text-white font-bold">${window.trivialPlayers[window.trivialTurn].nombre}</span></div><div class="bg-blue-900 text-white p-6 rounded-2xl shadow-inner border border-blue-700 mb-2"><p class="text-lg font-bold">${q.q}</p></div><div class="flex flex-col gap-3">${opts}</div><div id="contC" class="hidden mt-4"><button onclick="window.siguienteTurnoTrivial()" class="w-full bg-amber-50 text-gray-900 font-bold py-4 rounded-xl shadow-lg">Siguiente</button></div></div>`;
         };
 
         window.checkTrivial = function(idx) {
@@ -1580,7 +1605,7 @@
         window.avanzarRondaTrivial = function() { window.trivialRound++; window.trivialTurn = 0; window.flujoTurnoTrivial(); };
 
         window.iniciarParejasMulti = function(p) {
-            window.parejasPlayers = p.sort(() => Math.random() - 0.5).map(n => ({ nombre: n, puntos: 0, eliminado: false }));
+            window.parejasPlayers = window.shuffleArray([...p]).map(n => ({ nombre: n, puntos: 0, eliminado: false }));
             window.parejasRound = 1; window.totalRondasParejas = 5; window.parejasTurn = 0; if (window.parejasPlayers.length > 1) window.mostrarSorteoTurnoParejas(); else window.flujoTurnoParejas();
         };
 
@@ -1599,8 +1624,9 @@
         };
 
         window.iniciarTableroParejas = function() {
-            window.toggleDisclaimer(false); const sel = window.bancoImagenesParejas.sort(() => Math.random() - 0.5).slice(0, 6);
-            let deck = [...sel, ...sel].sort(() => Math.random() - 0.5);
+            window.toggleDisclaimer(false); 
+            const sel = window.shuffleArray([...window.bancoImagenesParejas]).slice(0, 6);
+            let deck = window.shuffleArray([...sel, ...sel]);
             window.memCards = deck.map((img, idx) => ({ id: idx, img: img, isFlipped: false, isMatched: false }));
             window.memFlipped = []; window.memLock = false; window.memMatches = 0;
             window.memTime = Math.max(10, 60 - ((window.parejasRound - 1) * 10));
@@ -1657,8 +1683,9 @@
         window.avanzarRondaParejas = function() { window.parejasRound++; window.parejasTurn = 0; window.flujoTurnoParejas(); };
 
         window.iniciarFlashMulti = function(p) {
-            window.flashPlayers = p.sort(() => Math.random() - 0.5).map(n => ({ nombre: n, puntos: 0 }));
-            window.flashRound = 1; window.totalRondasFlash = p.length === 1 ? 10 : 5; window.flashTurn = 0;
+            window.flashPlayers = window.shuffleArray([...p]).map(n => ({ nombre: n, puntos: 0 }));
+            window.flashRound = 1; window.totalRondasFlash = p.length === 1 ? 999999 : 5; window.flashTurn = 0;
+            window.flashSoloAlive = true;
             if (window.flashPlayers.length > 1) window.mostrarSorteoTurnoFlash(); else window.flujoTurnoFlash();
         };
 
@@ -1676,17 +1703,18 @@
         };
 
         window.jugarTurnoFlash = function() {
-            window.toggleDisclaimer(false); const cor = window.bancoFlash[Math.floor(Math.random() * window.bancoFlash.length)];
-            window.flashCurrentOptions = [cor, ...window.bancoFlash.filter(i => i.name !== cor.name).sort(() => 0.5 - Math.random()).slice(0, 3)].sort(() => 0.5 - Math.random());
+            window.toggleDisclaimer(false); 
+            const cor = window.bancoFlash[Math.floor(Math.random() * window.bancoFlash.length)];
+            window.flashCurrentOptions = window.shuffleArray([cor, ...window.shuffleArray(window.bancoFlash.filter(i => i.name !== cor.name)).slice(0, 3)]);
             window.flashCurrentCorrect = cor; const pre = new Image(); pre.src = `https://raw.githubusercontent.com/ejruizgarcia/images/main/${cor.file}`;
             document.getElementById('juegosContenido').innerHTML = `<div class="w-full max-w-sm flex flex-col items-center gap-8 fade-in text-center"><p class="text-2xl text-gray-400">Atención...</p><h2 class="text-9xl font-black text-orange-500 pop-in" id="fC">3</h2></div>`;
             let ct = 3; window.flashCountdownTimer = setInterval(() => { ct--; if (ct > 0) { const el = document.getElementById('fC'); if(el) { el.innerText = ct; el.classList.remove('pop-in'); void el.offsetWidth; el.classList.add('pop-in'); } } else {
                 clearInterval(window.flashCountdownTimer); document.getElementById('juegosContenido').innerHTML = `<div class="absolute inset-0 z-[80] bg-black flex items-center justify-center p-2"><img src="https://raw.githubusercontent.com/ejruizgarcia/images/main/${cor.file}" class="w-full h-full object-cover rounded-2xl"></div>`;
                 
                 let tiempoExposicion = 170;
-                if (window.flashPlayers.length === 1 && window.flashRound >= 5) {
-                    tiempoExposicion = 150;
-                } else if (window.flashPlayers.length > 1 && window.flashRound >= 4) {
+                if (window.flashRound >= 10) {
+                    tiempoExposicion = 120;
+                } else if (window.flashRound >= 5) {
                     tiempoExposicion = 150;
                 }
 
@@ -1696,7 +1724,10 @@
 
         window.mostrarOpcionesFlash = function() {
             window.toggleDisclaimer(false); let opts = ''; window.flashCurrentOptions.forEach((o, i) => { opts += `<button onclick="window.checkFlash(${i})" id="btnF${i}" class="w-full h-full min-h-[70px] bg-gray-700 text-white font-bold text-xl rounded-2xl border-2 border-gray-600 flex items-center justify-center p-3 leading-tight">${o.name}</button>`; });
-            document.getElementById('juegosContenido').innerHTML = `<div class="w-full h-full max-w-2xl flex flex-col gap-3 fade-in mx-auto"><div class="flex justify-between items-center bg-gray-800 p-3 rounded-xl"><span class="text-orange-400 text-xs uppercase">Ronda ${window.flashRound} de ${window.totalRondasFlash}</span><span class="text-white font-bold">${window.flashPlayers[window.flashTurn].nombre}</span></div><p class="text-center text-gray-300 font-bold uppercase shrink-0">¿Qué paso era?</p><div class="grid grid-cols-1 sm:grid-cols-2 gap-2 flex-1">${opts}</div><div id="contF" class="hidden mt-auto"><button onclick="window.siguienteTurnoFlash()" class="w-full bg-amber-500 text-gray-900 font-bold py-3 rounded-xl text-lg">Siguiente</button></div></div>`;
+            
+            let labelRonda = window.flashPlayers.length === 1 ? `Puntos: ${window.flashPlayers[0].puntos}` : `Ronda ${window.flashRound} de ${window.totalRondasFlash}`;
+
+            document.getElementById('juegosContenido').innerHTML = `<div class="w-full h-full max-w-2xl flex flex-col gap-3 fade-in mx-auto"><div class="flex justify-between items-center bg-gray-800 p-3 rounded-xl"><span class="text-orange-400 text-xs uppercase">${labelRonda}</span><span class="text-white font-bold">${window.flashPlayers[window.flashTurn].nombre}</span></div><p class="text-center text-gray-300 font-bold uppercase shrink-0">¿Qué paso era?</p><div class="grid grid-cols-1 sm:grid-cols-2 gap-2 flex-1">${opts}</div><div id="contF" class="hidden mt-auto"><button onclick="window.siguienteTurnoFlash()" class="w-full bg-amber-500 text-gray-900 font-bold py-3 rounded-xl text-lg">Siguiente</button></div></div>`;
         };
 
         window.checkFlash = function(idx) {
@@ -1707,47 +1738,74 @@
                 else if (i === idx && !esC) b.classList.add('bg-red-600', 'border-red-400');
                 else b.classList.add('bg-gray-800', 'opacity-50');
             }
-            if (esC) window.flashPlayers[window.flashTurn].puntos += 100;
+            if (esC) {
+                window.flashPlayers[window.flashTurn].puntos += 100;
+            } else {
+                if (window.flashPlayers.length === 1) window.flashSoloAlive = false;
+            }
             document.getElementById('contF').classList.remove('hidden');
         };
 
         window.siguienteTurnoFlash = function() {
-            window.flashTurn++; if(window.flashTurn < window.flashPlayers.length) window.flujoTurnoFlash();
-            else { if (window.flashPlayers.length === 1) { window.flashRound++; if(window.flashRound > window.totalRondasFlash) window.mostrarPantallaVictoriaFlash(); else { window.flashTurn = 0; window.flujoTurnoFlash(); } }
-                else { if (window.flashRound >= window.totalRondasFlash) window.mostrarPantallaVictoriaFlash(); else window.mostrarClasificacionFlash(false); } }
+            if (window.flashPlayers.length === 1) {
+                if (!window.flashSoloAlive) {
+                    window.mostrarPantallaVictoriaFlash();
+                } else {
+                    window.flashRound++;
+                    window.flashTurn = 0;
+                    window.flujoTurnoFlash();
+                }
+            } else {
+                window.flashTurn++;
+                if (window.flashTurn < window.flashPlayers.length) {
+                    window.flujoTurnoFlash();
+                } else {
+                    if (window.flashRound >= window.totalRondasFlash) {
+                        window.mostrarPantallaVictoriaFlash();
+                    } else {
+                        window.mostrarClasificacionFlash(false);
+                    }
+                }
+            }
         };
 
         window.mostrarClasificacionFlash = function(esF) {
             window.toggleDisclaimer(true); const ranking = [...window.flashPlayers].sort((a,b) => b.puntos - a.puntos);
             let html = ranking.map(p => `<div class="flex justify-between items-center p-4 bg-gray-800 rounded-xl mb-2"><div><span class="text-white font-bold">${p.nombre}</span></div><span class="font-black text-orange-400">${p.puntos} pts</span></div>`).join('');
-            let btnH = esF ? `<button onclick="window.volverJuegos()" class="w-full bg-gray-600 text-white font-bold py-4 rounded-xl mt-4">Menú</button>` : `<button onclick="window.avanzarRondaFlash()" class="w-full bg-orange-600 text-white font-bold py-4 rounded-xl mt-4">Ronda ${window.flashRound + 1}</button>`;
+            let btnH = esF ? `<button onclick="window.volverJuegos()" class="w-full bg-gray-600 text-white font-bold py-4 rounded-xl mt-4">Menú</button>` : `<button onclick="window.avanzarRondaFlash()" class="w-full bg-orange-600 text-white font-bold py-4 rounded-xl mt-4">Siguiente Ronda</button>`;
             document.getElementById('juegosContenido').innerHTML = `<div class="w-full max-w-sm flex flex-col fade-in"><h2 class="text-2xl font-bold text-white mb-6 text-center">Clasificación</h2>${html}${btnH}</div>`;
         };
         window.avanzarRondaFlash = function() { window.flashRound++; window.flashTurn = 0; window.flujoTurnoFlash(); };
         window.mostrarPantallaVictoriaFlash = function() {
             window.toggleDisclaimer(true); const ranking = [...window.flashPlayers].sort((a,b) => b.puntos - a.puntos);
-            document.getElementById('juegosContenido').innerHTML = `<div class="w-full max-w-sm flex flex-col items-center text-center py-4 fade-in"><div class="text-7xl mb-4 pop-in">🏆</div><h2 class="text-3xl font-black text-orange-400 mb-4">¡Terminado!</h2><button onclick="window.mostrarClasificacionFlash(true)" class="w-full bg-orange-500 text-gray-900 font-bold py-4 rounded-xl mb-4">Ver clasificación</button><button onclick="window.volverJuegos()" class="w-full bg-gray-700 text-white font-bold py-4 rounded-xl">Menú</button></div>`;
+            let titulo = window.flashPlayers.length === 1 ? "Fin de la partida" : "¡Terminado!";
+            document.getElementById('juegosContenido').innerHTML = `<div class="w-full max-w-sm flex flex-col items-center text-center py-4 fade-in"><div class="text-7xl mb-4 pop-in">🏆</div><h2 class="text-3xl font-black text-orange-400 mb-4">${titulo}</h2><button onclick="window.mostrarClasificacionFlash(true)" class="w-full bg-orange-500 text-gray-900 font-bold py-4 rounded-xl mb-4">Ver clasificación</button><button onclick="window.volverJuegos()" class="w-full bg-gray-700 text-white font-bold py-4 rounded-xl">Menú</button></div>`;
         };
 
-        // LÓGICA PUZLE DESLIZANTE 2X3 DRAG AND DROP
         window.iniciarPuzzleMulti = (names) => {
-            window.pzPlayers = names.sort(()=>0.5-Math.random()).map(n => ({ nombre: n, pts: 0 }));
-            window.pzRound = 1; window.pzTurn = 0; window.flujoPuzzle();
+            window.pzPlayers = window.shuffleArray([...names]).map(n => ({ nombre: n, pts: 0 }));
+            window.pzRound = 1; window.pzTurn = 0; 
+            window.pzSoloMode = names.length === 1;
+            window.pzTimeLeft = 120; 
+            window.flujoPuzzle();
         };
 
         window.flujoPuzzle = () => {
             const p = window.pzPlayers[window.pzTurn];
             let txt = window.pzRound === 1 ? "¡Esta es la primera de dos rondas!" : "¡Esta es la segunda y definitiva ronda!";
+            if (window.pzSoloMode) {
+                txt = "¡Modo Contrarreloj! Resuelve tantos como puedas en 2 minutos.";
+            }
             document.getElementById('juegosContenido').innerHTML = `
                 <div class="text-center space-y-8 fade-in w-full">
                     <h3 class="text-4xl font-bold text-teal-400">${p.nombre}</h3>
-                    <p class="text-teal-200 font-bold uppercase tracking-widest border border-teal-800 p-4 rounded-xl">${txt}</p>
+                    <div class="text-teal-200 font-bold uppercase tracking-widest border border-teal-800 p-4 rounded-xl">${txt}</div>
                     <button onclick="window.jugarPuzleTurno()" class="w-full p-6 bg-teal-600 rounded-2xl font-black text-2xl shadow-xl active:scale-95 transition uppercase">Empezar</button>
                 </div>`;
         };
 
         window.jugarPuzleTurno = () => {
-            const hTimer = document.getElementById('juegosHeaderTimer'); hTimer.classList.remove('hidden'); hTimer.innerText = '00:00';
+            const hTimer = document.getElementById('juegosHeaderTimer'); hTimer.classList.remove('hidden'); 
             window.pzImg = window.bancoFlash[Math.floor(Math.random()*window.bancoFlash.length)];
             window.pzGrid = [0,1,2,3,4,5]; let empty = 5;
             for(let i=0; i<150; i++) {
@@ -1756,15 +1814,31 @@
                 const next = adj[Math.floor(Math.random()*adj.length)];
                 [window.pzGrid[empty], window.pzGrid[next]] = [window.pzGrid[next], window.pzGrid[empty]]; empty = next;
             }
-            window.pzSecs = 0; clearInterval(window.puzzleTimer);
-            window.puzzleTimer = setInterval(() => { window.pzSecs++; hTimer.innerText = window.formatTimeString(window.pzSecs); }, 1000);
+            window.pzPuzzleStartTime = Date.now();
+            clearInterval(window.puzzleTimer);
+            
+            if (window.pzSoloMode) {
+                hTimer.innerText = window.formatTimeString(window.pzTimeLeft);
+                window.puzzleTimer = setInterval(() => { 
+                    window.pzTimeLeft--; 
+                    hTimer.innerText = window.formatTimeString(window.pzTimeLeft);
+                    if (window.pzTimeLeft <= 0) {
+                        clearInterval(window.puzzleTimer);
+                        window.finPuzzle();
+                    }
+                }, 1000);
+            } else {
+                window.pzSecs = 0; hTimer.innerText = '00:00';
+                window.puzzleTimer = setInterval(() => { window.pzSecs++; hTimer.innerText = window.formatTimeString(window.pzSecs); }, 1000);
+            }
             window.initPzUI();
         };
 
         window.initPzUI = () => {
+            let labelTop = window.pzSoloMode ? `Puntos: ${window.pzPlayers[0].pts}` : `Ronda ${window.pzRound} - ${window.pzPlayers[window.pzTurn].nombre}`;
             document.getElementById('juegosContenido').innerHTML = `
                 <div class="space-y-4 w-full text-center">
-                    <div class="bg-gray-800 p-3 rounded-xl border border-gray-700 text-teal-400 font-bold uppercase text-xs mx-auto max-w-[280px]">Ronda ${window.pzRound} - ${window.pzPlayers[window.pzTurn].nombre}</div>
+                    <div class="bg-gray-800 p-3 rounded-xl border border-gray-700 text-teal-400 font-bold uppercase text-xs mx-auto max-w-[280px]">${labelTop}</div>
                     <div class="relative w-full max-w-[280px] aspect-[2/3] bg-gray-800 border-4 border-gray-700 rounded-lg overflow-hidden shadow-2xl mx-auto touch-none select-none" id="pzBoard"></div>
                     <button onclick="window.rendirsePz()" class="w-full max-w-[280px] p-3 bg-gray-800 border border-gray-700 rounded-xl text-gray-400 font-bold">Me rindo</button>
                 </div>`;
@@ -1826,15 +1900,32 @@
             if(Math.abs(r1-r2)+Math.abs(c1-c2)===1){ [window.pzGrid[idx], window.pzGrid[em]] = [window.pzGrid[em], window.pzGrid[idx]]; }
             window.updPzUI();
             if(window.pzGrid.every((v,i)=>v===i)){
-                clearInterval(window.puzzleTimer); document.getElementById('juegosHeaderTimer').classList.add('hidden');
-                let s = Math.max(50, 500-(window.pzSecs*2)); window.pzPlayers[window.pzTurn].pts += s;
-                setTimeout(() => {
-                    document.getElementById('juegosContenido').innerHTML = `<div class="text-center space-y-6 fade-in"><p class="text-7xl">🧩</p><h2 class="text-3xl font-black text-teal-400">¡COMPLETADO!</h2><p class="text-xl">Sumas <b>${s} pts</b></p><button onclick="window.nextPzTurn()" class="w-full p-5 bg-teal-600 rounded-xl font-bold uppercase">Continuar</button></div>`;
-                }, 300);
+                if (window.pzSoloMode) {
+                    window.pzPlayers[0].pts += 100;
+                    setTimeout(() => {
+                        window.jugarPuzleTurno();
+                    }, 500);
+                } else {
+                    clearInterval(window.puzzleTimer); document.getElementById('juegosHeaderTimer').classList.add('hidden');
+                    let s = Math.max(50, 500-(window.pzSecs*2)); window.pzPlayers[window.pzTurn].pts += s;
+                    setTimeout(() => {
+                        document.getElementById('juegosContenido').innerHTML = `<div class="text-center space-y-6 fade-in"><p class="text-7xl">🧩</p><h2 class="text-3xl font-black text-teal-400">¡COMPLETADO!</h2><p class="text-xl">Sumas <b>${s} pts</b></p><button onclick="window.nextPzTurn()" class="w-full p-5 bg-teal-600 rounded-xl font-bold uppercase">Continuar</button></div>`;
+                    }, 300);
+                }
             }
         };
 
-        window.rendirsePz = () => { clearInterval(window.puzzleTimer); document.getElementById('juegosHeaderTimer').classList.add('hidden'); window.nextPzTurn(); };
+        window.rendirsePz = () => { 
+            if (!window.pzSoloMode) {
+                clearInterval(window.puzzleTimer); 
+                document.getElementById('juegosHeaderTimer').classList.add('hidden'); 
+                window.nextPzTurn(); 
+            } else {
+                clearInterval(window.puzzleTimer);
+                window.finPuzzle();
+            }
+        };
+
         window.nextPzTurn = () => {
             window.pzTurn++; if(window.pzTurn>=window.pzPlayers.length){ window.pzTurn=0; window.pzRound++; }
             if(window.pzRound>2) window.finPuzzle(); else window.flujoPuzzle();
@@ -1842,6 +1933,7 @@
 
         window.finPuzzle = () => {
             const rk = [...window.pzPlayers].sort((a,b)=>b.pts-a.pts);
+            document.getElementById('juegosHeaderTimer').classList.add('hidden');
             document.getElementById('juegosContenido').innerHTML = `<div class="text-center space-y-6 w-full"><p class="text-6xl">🏆</p><h2 class="text-3xl font-black text-teal-400 uppercase">RESULTADOS</h2><div class="space-y-3">${rk.map(r => `<div class="flex justify-between p-4 bg-gray-800 rounded-xl border border-gray-700"><span>${r.nombre}</span><b>${r.pts} pts</b></div>`).join('')}</div><button onclick="volverJuegos()" class="w-full p-5 bg-gray-700 rounded-xl font-bold">SALIR</button></div>`;
         };
 
