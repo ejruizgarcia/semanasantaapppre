@@ -1385,7 +1385,18 @@
                     } else {
                         const coEnd = coStart + 15;
                         let iC = 0;
-                        if (ahora < entradaCOTs) { iC = Math.floor(coStart * ((ahora - start) / (entradaCOTs - start))); }
+                        if (ahora < entradaCOTs) { 
+                            let timeRatio = (ahora - start) / (entradaCOTs - start);
+                            if (cof.nombre === 'Santo Entierro') {
+                                if (timeRatio <= 0.67) {
+                                    iC = Math.floor(6 * (timeRatio / 0.67));
+                                } else {
+                                    iC = 6 + Math.floor((coStart - 6) * ((timeRatio - 0.67) / 0.33));
+                                }
+                            } else {
+                                iC = Math.floor(coStart * timeRatio); 
+                            }
+                        }
                         else if (ahora >= entradaCOTs && ahora < salidaCOCruzTs) { iC = coStart + Math.floor(15 * ((ahora - entradaCOTs) / (salidaCOCruzTs - entradaCOTs))); }
                         else { iC = coEnd + Math.floor((textoItinerario.length - coEnd) * ((ahora - salidaCOCruzTs) / (recogidaCruzTs - salidaCOCruzTs))); }
                         
@@ -1782,11 +1793,11 @@
             document.getElementById('juegosContenido').innerHTML = `<div class="w-full max-w-sm flex flex-col items-center text-center py-4 fade-in"><div class="text-7xl mb-4 pop-in">🏆</div><h2 class="text-3xl font-black text-orange-400 mb-4">${titulo}</h2><button onclick="window.mostrarClasificacionFlash(true)" class="w-full bg-orange-500 text-gray-900 font-bold py-4 rounded-xl mb-4">Ver clasificación</button><button onclick="window.volverJuegos()" class="w-full bg-gray-700 text-white font-bold py-4 rounded-xl">Menú</button></div>`;
         };
 
+        // LÓGICA PUZLE DESLIZANTE 2X3 DRAG AND DROP
         window.iniciarPuzzleMulti = (names) => {
             window.pzPlayers = window.shuffleArray([...names]).map(n => ({ nombre: n, pts: 0 }));
             window.pzRound = 1; window.pzTurn = 0; 
             window.pzSoloMode = names.length === 1;
-            window.pzTimeLeft = 120; 
             window.flujoPuzzle();
         };
 
@@ -1794,7 +1805,7 @@
             const p = window.pzPlayers[window.pzTurn];
             let txt = window.pzRound === 1 ? "¡Esta es la primera de dos rondas!" : "¡Esta es la segunda y definitiva ronda!";
             if (window.pzSoloMode) {
-                txt = "¡Modo Contrarreloj! Resuelve tantos como puedas en 2 minutos.";
+                txt = "¡Modo Supervivencia! Tienes 2 minutos por puzle. Resuelve todos los que puedas.";
             }
             document.getElementById('juegosContenido').innerHTML = `
                 <div class="text-center space-y-8 fade-in w-full">
@@ -1818,6 +1829,7 @@
             clearInterval(window.puzzleTimer);
             
             if (window.pzSoloMode) {
+                window.pzTimeLeft = 120; 
                 hTimer.innerText = window.formatTimeString(window.pzTimeLeft);
                 window.puzzleTimer = setInterval(() => { 
                     window.pzTimeLeft--; 
@@ -1835,7 +1847,7 @@
         };
 
         window.initPzUI = () => {
-            let labelTop = window.pzSoloMode ? `Puntos: ${window.pzPlayers[0].pts}` : `Ronda ${window.pzRound} - ${window.pzPlayers[window.pzTurn].nombre}`;
+            let labelTop = window.pzSoloMode ? `Ronda ${window.pzRound} - Puntos: ${window.pzPlayers[0].pts}` : `Ronda ${window.pzRound} - ${window.pzPlayers[window.pzTurn].nombre}`;
             document.getElementById('juegosContenido').innerHTML = `
                 <div class="space-y-4 w-full text-center">
                     <div class="bg-gray-800 p-3 rounded-xl border border-gray-700 text-teal-400 font-bold uppercase text-xs mx-auto max-w-[280px]">${labelTop}</div>
@@ -1900,13 +1912,15 @@
             if(Math.abs(r1-r2)+Math.abs(c1-c2)===1){ [window.pzGrid[idx], window.pzGrid[em]] = [window.pzGrid[em], window.pzGrid[idx]]; }
             window.updPzUI();
             if(window.pzGrid.every((v,i)=>v===i)){
+                clearInterval(window.puzzleTimer); document.getElementById('juegosHeaderTimer').classList.add('hidden');
                 if (window.pzSoloMode) {
-                    window.pzPlayers[0].pts += 100;
+                    let s = Math.max(50, 500 - ((120 - window.pzTimeLeft) * 2)); 
+                    window.pzPlayers[0].pts += s;
+                    window.pzRound++;
                     setTimeout(() => {
-                        window.jugarPuzleTurno();
-                    }, 500);
+                        document.getElementById('juegosContenido').innerHTML = `<div class="text-center space-y-6 fade-in"><p class="text-7xl">🧩</p><h2 class="text-3xl font-black text-teal-400">¡COMPLETADO!</h2><p class="text-xl">Sumas <b>${s} pts</b></p><button onclick="window.flujoPuzzle()" class="w-full p-5 bg-teal-600 rounded-xl font-bold uppercase">Siguiente Puzle</button></div>`;
+                    }, 300);
                 } else {
-                    clearInterval(window.puzzleTimer); document.getElementById('juegosHeaderTimer').classList.add('hidden');
                     let s = Math.max(50, 500-(window.pzSecs*2)); window.pzPlayers[window.pzTurn].pts += s;
                     setTimeout(() => {
                         document.getElementById('juegosContenido').innerHTML = `<div class="text-center space-y-6 fade-in"><p class="text-7xl">🧩</p><h2 class="text-3xl font-black text-teal-400">¡COMPLETADO!</h2><p class="text-xl">Sumas <b>${s} pts</b></p><button onclick="window.nextPzTurn()" class="w-full p-5 bg-teal-600 rounded-xl font-bold uppercase">Continuar</button></div>`;
@@ -1916,13 +1930,12 @@
         };
 
         window.rendirsePz = () => { 
-            if (!window.pzSoloMode) {
-                clearInterval(window.puzzleTimer); 
-                document.getElementById('juegosHeaderTimer').classList.add('hidden'); 
-                window.nextPzTurn(); 
-            } else {
-                clearInterval(window.puzzleTimer);
+            clearInterval(window.puzzleTimer); 
+            document.getElementById('juegosHeaderTimer').classList.add('hidden'); 
+            if (window.pzSoloMode) {
                 window.finPuzzle();
+            } else {
+                window.nextPzTurn(); 
             }
         };
 
@@ -1934,7 +1947,8 @@
         window.finPuzzle = () => {
             const rk = [...window.pzPlayers].sort((a,b)=>b.pts-a.pts);
             document.getElementById('juegosHeaderTimer').classList.add('hidden');
-            document.getElementById('juegosContenido').innerHTML = `<div class="text-center space-y-6 w-full"><p class="text-6xl">🏆</p><h2 class="text-3xl font-black text-teal-400 uppercase">RESULTADOS</h2><div class="space-y-3">${rk.map(r => `<div class="flex justify-between p-4 bg-gray-800 rounded-xl border border-gray-700"><span>${r.nombre}</span><b>${r.pts} pts</b></div>`).join('')}</div><button onclick="volverJuegos()" class="w-full p-5 bg-gray-700 rounded-xl font-bold">SALIR</button></div>`;
+            let title = window.pzSoloMode ? "¡TIEMPO AGOTADO!" : "RESULTADOS";
+            document.getElementById('juegosContenido').innerHTML = `<div class="text-center space-y-6 w-full"><p class="text-6xl">🏆</p><h2 class="text-3xl font-black text-teal-400 uppercase">${title}</h2><div class="space-y-3">${rk.map(r => `<div class="flex justify-between p-4 bg-gray-800 rounded-xl border border-gray-700"><span>${r.nombre}</span><b>${r.pts} pts</b></div>`).join('')}</div><button onclick="volverJuegos()" class="w-full p-5 bg-gray-700 rounded-xl font-bold">SALIR</button></div>`;
         };
 
         const ordenDiasSwipe = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'madrugada', 'viernes', 'resurreccion'];
